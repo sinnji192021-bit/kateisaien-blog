@@ -59,6 +59,8 @@ article.post strong{color:var(--dgreen)}
 .aff li{padding:8px 0;border-bottom:1px dashed #efe2d2}
 .aff li:last-child{border-bottom:none}
 .aff .ph{display:inline-block;background:#ffe1cf;color:#b5673a;border-radius:8px;padding:2px 10px;font-size:13px}
+.aff p{font-size:14px;color:#6b6b5f;margin:4px 0 8px}
+.rk{margin:14px 0;overflow-x:auto}/* 楽天/もしもリンクのはみ出し防止 */
 
 /* 次の記事 */
 .next{margin-top:40px;background:var(--soft);border-radius:16px;padding:18px 20px}
