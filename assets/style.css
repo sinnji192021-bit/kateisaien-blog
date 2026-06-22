@@ -1,0 +1,70 @@
+/* えいこうの家庭菜園ノート — スタイル */
+:root{
+  --cream:#FBF7EF; --green:#5FA049; --dgreen:#3F7A33; --text:#3A3A3A;
+  --red:#E8604C; --brown:#B07A4F; --soft:#EAF3E4; --card:#FFFFFF;
+  --maru:"Hiragino Maru Gothic ProN","ヒラギノ丸ゴ ProN W4","Hiragino Sans",sans-serif;
+  --body:"Hiragino Sans","ヒラギノ角ゴシック",-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--body);color:var(--text);background:var(--cream);line-height:1.9;font-size:17px;-webkit-font-smoothing:antialiased}
+img{max-width:100%;height:auto;display:block;border-radius:14px}
+a{color:var(--dgreen)}
+
+/* PR表記バー（ステマ規制対応・必須） */
+.prbar{background:var(--soft);color:#5b6b50;font-size:12px;text-align:center;padding:6px 12px}
+
+/* ヘッダー */
+header.site{background:#fff;border-bottom:1px solid #ece6da}
+.site .inner{max-width:760px;margin:0 auto;padding:16px 20px;display:flex;align-items:center;gap:12px}
+.site .logo{font-family:var(--maru);font-size:22px;color:var(--dgreen);font-weight:bold;text-decoration:none}
+.site .tag{font-size:13px;color:#8a8a7d;margin-left:auto}
+
+/* コンテナ */
+.wrap{max-width:760px;margin:0 auto;padding:24px 20px 60px}
+
+/* ヒーロー */
+.hero{background:linear-gradient(180deg,#fffdf7,var(--soft));border-radius:24px;padding:34px 26px;text-align:center;margin-bottom:34px}
+.hero h1{font-family:var(--maru);color:var(--dgreen);font-size:30px;line-height:1.5;margin-bottom:10px}
+.hero p{color:#5b6b50;font-size:15px}
+
+/* 記事カード一覧 */
+.cards{display:grid;gap:20px}
+.card{background:var(--card);border-radius:20px;overflow:hidden;box-shadow:0 6px 18px rgba(80,70,50,.08);transition:transform .15s}
+.card:hover{transform:translateY(-3px)}
+.card a{text-decoration:none;color:inherit;display:block}
+.card .thumb{aspect-ratio:16/9;background:var(--soft)}
+.card .body{padding:16px 18px}
+.card .num{display:inline-block;background:var(--green);color:#fff;font-size:12px;border-radius:20px;padding:3px 12px;margin-bottom:8px}
+.card h2{font-family:var(--maru);font-size:19px;color:var(--dgreen);line-height:1.5;margin-bottom:6px}
+.card .ex{font-size:14px;color:#6b6b5f}
+
+/* 記事本文 */
+article.post h1{font-family:var(--maru);font-size:26px;color:var(--dgreen);line-height:1.5;margin:6px 0 18px}
+article.post h2{font-family:var(--maru);font-size:21px;color:var(--dgreen);margin:34px 0 12px;padding-left:12px;border-left:6px solid var(--green)}
+article.post h3{font-size:18px;color:var(--dgreen);margin:24px 0 8px}
+article.post p{margin:0 0 16px}
+article.post img{margin:18px auto}
+article.post .lead{background:var(--soft);border-radius:14px;padding:14px 18px;color:#4f5a45;font-size:15px;margin-bottom:22px}
+article.post strong{color:var(--dgreen)}
+.quote{background:#fff;border:2px dashed #d8e0cf;border-radius:14px;padding:14px 18px;margin:0 0 20px;color:#5b6b50}
+.quote p{margin:4px 0}
+.check{list-style:none;padding:0;margin:8px 0 16px}
+.check li{padding:6px 0 6px 30px;position:relative}
+.check li:before{content:"✅";position:absolute;left:0}
+
+/* アフィリンク・ボックス */
+.aff{background:#fffaf3;border:2px solid #f0d9c2;border-radius:16px;padding:16px 18px;margin:18px 0}
+.aff .h{font-weight:bold;color:var(--brown);margin-bottom:8px;font-size:15px}
+.aff ul{list-style:none;padding:0;margin:0}
+.aff li{padding:8px 0;border-bottom:1px dashed #efe2d2}
+.aff li:last-child{border-bottom:none}
+.aff .ph{display:inline-block;background:#ffe1cf;color:#b5673a;border-radius:8px;padding:2px 10px;font-size:13px}
+
+/* 次の記事 */
+.next{margin-top:40px;background:var(--soft);border-radius:16px;padding:18px 20px}
+.next .l{font-size:13px;color:#8a8a7d}
+.next a{font-family:var(--maru);font-size:17px}
+
+footer.site{background:#fff;border-top:1px solid #ece6da;text-align:center;padding:24px 20px;color:#8a8a7d;font-size:13px}
+footer.site a{color:#8a8a7d}
+.backlink{display:inline-block;margin-bottom:18px;color:var(--dgreen);text-decoration:none;font-size:14px}
