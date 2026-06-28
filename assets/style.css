@@ -61,6 +61,9 @@ article.post strong{color:var(--dgreen)}
 .aff .ph{display:inline-block;background:#ffe1cf;color:#b5673a;border-radius:8px;padding:2px 10px;font-size:13px}
 .aff p{font-size:14px;color:#6b6b5f;margin:4px 0 8px}
 .rk{margin:14px 0;overflow-x:auto}/* 楽天/もしもリンクのはみ出し防止 */
+.pick{display:inline-block;font-weight:bold;border-radius:8px;padding:3px 12px;font-size:14px;margin:14px 0 2px}
+.pick.cheap{background:#e7f2e0;color:#3F7A33}
+.pick.good{background:#fff0d8;color:#b5763a}
 
 /* 次の記事 */
 .next{margin-top:40px;background:var(--soft);border-radius:16px;padding:18px 20px}
