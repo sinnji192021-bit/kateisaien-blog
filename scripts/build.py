@@ -25,6 +25,7 @@ import html
 import json
 import re
 from pathlib import Path
+import datetime as _dt
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = json.loads((ROOT / "scripts" / "articles.json").read_text(encoding="utf-8"))
@@ -185,12 +186,33 @@ def build_articles() -> None:
 
 
 # ---------------------------------------------------------- sitemap
+def _lastmod(a) -> str:
+    """sitemap の lastmod を返す。
+
+    ★articles.json の date は「ノウハウ図書館での公開予定日」で、未来日が入る。
+      ブログ側の記事はすでに公開済みなので、未来日を lastmod に出してはいけない
+      （Googleは未来の lastmod を無効とみなし、サイトマップの信頼度が下がる）。
+      そこで「HTMLファイルの実際の更新日」を使い、それも無ければ今日で頭打ちにする。
+    """
+    today = _dt.date.today()
+    f = ROOT / "articles" / f"{a['slug']}.html"
+    if f.exists():
+        d = _dt.date.fromtimestamp(f.stat().st_mtime)
+    else:
+        try:
+            d = _dt.date.fromisoformat(a["date"])
+        except Exception:
+            d = today
+    return min(d, today).isoformat()
+
+
 def build_sitemap() -> None:
-    urls = [f"  <url>\n    <loc>{BASE}/</loc>\n    <lastmod>{newest_first(ARTS)[0]['date']}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>"]
+    today = _dt.date.today().isoformat()
+    urls = [f"  <url>\n    <loc>{BASE}/</loc>\n    <lastmod>{today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>"]
     for a in sorted(ARTS, key=lambda x: x["slug"]):
         urls.append(
             f"  <url>\n    <loc>{BASE}/articles/{a['slug']}.html</loc>\n"
-            f"    <lastmod>{a['date']}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>"
+            f"    <lastmod>{_lastmod(a)}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>"
         )
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "\n".join(urls) + "\n</urlset>\n"
     (ROOT / "sitemap.xml").write_text(xml, encoding="utf-8")
