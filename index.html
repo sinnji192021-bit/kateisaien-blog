@@ -71,6 +71,20 @@
   </nav>
   <!-- /BUILD:CHIPS -->
 
+  <!-- サイト内検索（build.py の管理外。ここは手で編集してよい） -->
+  <div class="sbox" id="sbox">
+    <label class="sfield">
+      <span class="sicon" aria-hidden="true">🔍</span>
+      <input id="q" type="search" autocomplete="off"
+             placeholder="野菜名やキーワードで探す（例：玉ねぎ、連作、水やり）"
+             aria-label="サイト内検索">
+      <button type="button" id="sclear" aria-label="検索をやめる" hidden>✕</button>
+    </label>
+    <p class="shint" id="shint">記事80本の見出しと要点から探します</p>
+    <div id="sresults" class="sresults" hidden></div>
+  </div>
+
+
   <!-- BUILD:CARDS -->
   <div class="sec" id="monthly"><h2>今月やること</h2><span class="en">THIS MONTH</span></div>
   <div class="cards">
@@ -257,7 +271,7 @@
       <div class="body">
         <h2>落ち葉は、踏むほど早く土になります🍂 冬にしか作れないもの</h2>
         <p class="ex">腐葉土は落ち葉と水と時間だけで作れます。買うと高いのに、材料はこの季節に拾えます。踏み込む理由と、米ぬかを足す意味をお話しします。</p>
-        <div class="meta"><time datetime="2027-12-04">2027年12月4日</time><span class="cat g">育てて学ぶ</span><span class="rtime">約6分</span><span class="new">NEW</span></div>
+        <div class="meta"><time datetime="2027-12-04">2027年12月4日</time><span class="cat g">育てて学ぶ</span><span class="rtime">約7分</span><span class="new">NEW</span></div>
       </div>
     </a></div>
 
@@ -266,7 +280,7 @@
       <div class="body">
         <h2>晴れた朝ほど、霜は降ります❄️ 曇りの夜は安全な理由</h2>
         <p class="ex">霜が降りるのは寒い夜ではなく、風のない晴れた夜です。曇っていれば気温が同じでも降りません。不織布1枚で2〜3℃違います。</p>
-        <div class="meta"><time datetime="2027-11-27">2027年11月27日</time><span class="cat g">育てて学ぶ</span><span class="rtime">約5分</span></div>
+        <div class="meta"><time datetime="2027-11-27">2027年11月27日</time><span class="cat g">育てて学ぶ</span><span class="rtime">約6分</span></div>
       </div>
     </a></div>
 
@@ -275,7 +289,7 @@
       <div class="body">
         <h2>冷蔵庫に入れて縮む野菜があります🥕 育った場所で決まる話</h2>
         <p class="ex">保存の正解は、その野菜が育った場所で決まります。土の中で育った根菜は土に近い温度で、夏に地上で実った野菜は冷やしすぎない。</p>
-        <div class="meta"><time datetime="2027-11-20">2027年11月20日</time><span class="cat g">育てて学ぶ</span><span class="rtime">約6分</span></div>
+        <div class="meta"><time datetime="2027-11-20">2027年11月20日</time><span class="cat g">育てて学ぶ</span><span class="rtime">約7分</span></div>
       </div>
     </a></div>
 
@@ -284,7 +298,7 @@
       <div class="body">
         <h2>空いたうねに、あえてタネをまきます🌾 根が土を耕す話</h2>
         <p class="ex">冬に空くうねは放っておくと固くなります。えん麦をまくと根が深くもぐって土をやわらかくし、ネコブセンチュウも減らします。</p>
-        <div class="meta"><time datetime="2027-11-13">2027年11月13日</time><span class="cat g">育てて学ぶ</span><span class="rtime">約5分</span></div>
+        <div class="meta"><time datetime="2027-11-13">2027年11月13日</time><span class="cat g">育てて学ぶ</span><span class="rtime">約6分</span></div>
       </div>
     </a></div>
 
@@ -293,7 +307,7 @@
       <div class="body">
         <h2>11月、山の実がなくなると畑に来ます🐦 ヒヨドリの見分け方</h2>
         <p class="ex">秋までいなかった鳥が11月から急に畑へ来ます。山の木の実が終わるからです。糸1本で防げる理由と、テグスの張り方をお話しします。</p>
-        <div class="meta"><time datetime="2027-11-06">2027年11月6日</time><span class="cat g">育てて学ぶ</span><span class="rtime">約6分</span></div>
+        <div class="meta"><time datetime="2027-11-06">2027年11月6日</time><span class="cat g">育てて学ぶ</span><span class="rtime">約7分</span></div>
       </div>
     </a></div>
 
@@ -302,7 +316,7 @@
       <div class="body">
         <h2>石灰は3種類あります🧪 まいた翌日にタネをまけるのは1つだけ</h2>
         <p class="ex">苦土石灰・有機石灰・消石灰は効き方も待ち時間も別ものです。苦土石灰は2週間あける必要があり、有機石灰はその日にまけます。</p>
-        <div class="meta"><time datetime="2027-10-30">2027年10月30日</time><span class="cat g">育てて学ぶ</span><span class="rtime">約6分</span></div>
+        <div class="meta"><time datetime="2027-10-30">2027年10月30日</time><span class="cat g">育てて学ぶ</span><span class="rtime">約7分</span></div>
       </div>
     </a></div>
 
@@ -311,7 +325,7 @@
       <div class="body">
         <h2>いちごは、埋めた瞬間に実が消えます🍓 クラウンを出す話</h2>
         <p class="ex">いちごが実らない原因の多くは植える深さです。株の中心にあるクラウンを土に埋めると花芽が出ません。ランナーの跡の向きで収穫のラクさも変わります。</p>
-        <div class="meta"><time datetime="2027-10-23">2027年10月23日</time><span class="cat g">育てて学ぶ</span><span class="rtime">約6分</span></div>
+        <div class="meta"><time datetime="2027-10-23">2027年10月23日</time><span class="cat g">育てて学ぶ</span><span class="rtime">約7分</span></div>
       </div>
     </a></div>
 
@@ -320,7 +334,7 @@
       <div class="body">
         <h2>豆は、大きく育てると冬に枯れます🫛 わざと遅らせてまく話</h2>
         <p class="ex">えんどうとそら豆は、まく時期を1週間まちがえると冬を越せません。大きく育った株のほうが寒さに弱いからです。目安は本葉2〜3枚で冬に入ること。</p>
-        <div class="meta"><time datetime="2027-10-16">2027年10月16日</time><span class="cat g">育てて学ぶ</span><span class="rtime">約6分</span></div>
+        <div class="meta"><time datetime="2027-10-16">2027年10月16日</time><span class="cat g">育てて学ぶ</span><span class="rtime">約7分</span></div>
       </div>
     </a></div>
 
@@ -819,5 +833,122 @@
   <p>© えいこうの家庭菜園ノート</p>
   <p>当サイトはアフィリエイト広告（Amazonアソシエイト・楽天アフィリエイト等）を利用しています。</p>
 </footer>
+
+<!-- サイト内検索（build.py の管理外） -->
+<script id="kateisaien-search">
+(function () {
+  var q = document.getElementById('q');
+  if (!q) return;
+  var box = document.getElementById('sresults');
+  var hint = document.getElementById('shint');
+  var clear = document.getElementById('sclear');
+  var data = null, loading = false, timer = null;
+
+  // 全角→半角・大文字→小文字をそろえる（「タマネギ」「ｔａｍａ」対策）
+  function norm(s) {
+    return (s || '').normalize('NFKC').toLowerCase().trim();
+  }
+  // カタカナ→ひらがな（「タマネギ」で「たまねぎ」も拾う）
+  function kana(s) {
+    return s.replace(/[\u30a1-\u30f6]/g, function (c) {
+      return String.fromCharCode(c.charCodeAt(0) - 0x60);
+    });
+  }
+  function keys(s) { return [s, kana(s)]; }
+
+  function load() {
+    if (data || loading) return Promise.resolve();
+    loading = true;
+    return fetch('search-index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (j) { data = j; loading = false; })
+      .catch(function () { loading = false; data = []; });
+  }
+
+  function esc(s) {
+    return (s || '').replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  function hl(text, terms) {
+    var out = esc(text);
+    terms.forEach(function (t) {
+      if (!t) return;
+      var re = new RegExp('(' + t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+      out = out.replace(re, '<mark>$1</mark>');
+    });
+    return out;
+  }
+
+  function search(raw) {
+    var terms = norm(raw).split(/[\s\u3000]+/).filter(Boolean);
+    if (!terms.length) return null;
+    var hits = data.filter(function (a) {
+      return terms.every(function (t) {
+        return keys(t).some(function (k) { return a.s.indexOf(k) >= 0; });
+      });
+    });
+    // 並び順：タイトル一致 > 説明文一致 > 本文のみ。同点なら元の順（新しい順）
+    function score(a) {
+      var t = a.ta || norm(a.t), d = a.da || norm(a.d), n = 0;
+      terms.forEach(function (w) {
+        if (keys(w).some(function (k) { return t.indexOf(k) >= 0; })) n += 10;
+        else if (keys(w).some(function (k) { return d.indexOf(k) >= 0; })) n += 3;
+      });
+      return n;
+    }
+    hits.forEach(function (a, i) { a._i = i; a._sc = score(a); });
+    hits.sort(function (x, y) { return (y._sc - x._sc) || (x._i - y._i); });
+    return hits;
+  }
+
+  function render(raw) {
+    var hits = search(raw);
+    if (hits === null) {
+      box.hidden = true; box.innerHTML = '';
+      hint.textContent = '記事80本の見出しと要点から探します';
+      return;
+    }
+    var terms = norm(raw).split(/[\s\u3000]+/).filter(Boolean);
+    hint.textContent = '';
+    box.hidden = false;
+    if (!hits.length) {
+      box.innerHTML = '<div class="snone">「<b>' + esc(raw) + '</b>」に当てはまる記事は見つかりませんでした。<br>'
+        + '野菜の名前（玉ねぎ・大根）や、困りごと（虫・雑草・水やり）で試してみてください。</div>';
+      return;
+    }
+    var html = '<p class="scount"><b>' + hits.length + '</b> 件見つかりました</p>';
+    hits.slice(0, 30).forEach(function (a) {
+      html += '<a class="shit" href="' + a.u + '">'
+        + (a.i ? '<img src="' + a.i + '" alt="" loading="lazy">' : '')
+        + '<div><p class="st">' + hl(a.t, terms) + '</p>'
+        + '<p class="sd">' + hl(a.d, terms) + '</p></div></a>';
+    });
+    if (hits.length > 30) html += '<p class="scount">ほか ' + (hits.length - 30) + ' 件</p>';
+    box.innerHTML = html;
+  }
+
+  function onInput() {
+    var v = q.value;
+    clear.hidden = !v;
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      load().then(function () { render(v); });
+    }, 120);
+  }
+
+  q.addEventListener('input', onInput);
+  q.addEventListener('focus', load);
+  q.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { q.value = ''; onInput(); q.blur(); }
+  });
+  clear.addEventListener('click', function () { q.value = ''; onInput(); q.focus(); });
+
+  // ?s=玉ねぎ で開いたときは、その語で検索した状態にする
+  var pre = new URLSearchParams(location.search).get('s');
+  if (pre) { q.value = pre; onInput(); }
+})();
+</script>
 </body>
 </html>

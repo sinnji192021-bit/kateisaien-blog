@@ -229,6 +229,9 @@ def main() -> None:
     print("articles/")
     build_articles()
     build_sitemap()
+    # 検索インデックス（サイト内検索用）も毎回作り直す
+    import subprocess
+    subprocess.run(["python3", str(ROOT / "scripts" / "build_search.py")], check=True)
     print("\n✅ 完了。ブラウザで確認して、よければ PUSH してください。")
 
 
