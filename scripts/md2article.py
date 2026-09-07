@@ -132,7 +132,7 @@ def build(cfg):
                + '  '.join(cfg['aff'])
                + '\n       貼るときは必ず <div class="rk">…</div> でくるむこと（div開閉数が合わなくなるため）\n  ▲▲▲ -->\n')
 
-    imgurl = ('https://kateisaien-blog.pages.dev/images/'
+    imgurl = ('https://kateisaien-note.com/images/'
               + cfg['imgdir'] + '/' + quote(thumb + '.png'))
     nx_href, nx_label = cfg['next']
     ymd = cfg['date']; y, mo, d = ymd.split('-')
@@ -145,18 +145,18 @@ def build(cfg):
 <title>{title}｜えいこうの家庭菜園ノート</title>
 <meta name="description" content="{cfg['desc']}">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://kateisaien-blog.pages.dev/articles/{cfg['slug']}.html">
+<link rel="canonical" href="https://kateisaien-note.com/articles/{cfg['slug']}.html">
 <meta name="theme-color" content="#5FA049">
 <meta property="og:type" content="article">
 <meta property="og:title" content="{title}｜えいこうの家庭菜園ノート">
 <meta property="og:description" content="{cfg['og']}">
-<meta property="og:url" content="https://kateisaien-blog.pages.dev/articles/{cfg['slug']}.html">
+<meta property="og:url" content="https://kateisaien-note.com/articles/{cfg['slug']}.html">
 <meta property="og:image" content="{imgurl}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../assets/style.css">
 <script type="application/ld+json">
-{{"@context":"https://schema.org","@type":"BlogPosting","headline":{json.dumps(re.sub(r'[【】「」🌱🍓🍂❄️🧄🧅🥬🥕]', '', title), ensure_ascii=False)},"description":{json.dumps(cfg['og'], ensure_ascii=False)},"datePublished":"{ymd}","author":{{"@type":"Person","name":"えいこう（8150）"}},"publisher":{{"@type":"Organization","name":"えいこうの家庭菜園ノート"}},"mainEntityOfPage":"https://kateisaien-blog.pages.dev/articles/{cfg['slug']}.html"}}
+{{"@context":"https://schema.org","@type":"BlogPosting","headline":{json.dumps(re.sub(r'[【】「」🌱🍓🍂❄️🧄🧅🥬🥕]', '', title), ensure_ascii=False)},"description":{json.dumps(cfg['og'], ensure_ascii=False)},"datePublished":"{ymd}","author":{{"@type":"Person","name":"えいこう（8150）"}},"publisher":{{"@type":"Organization","name":"えいこうの家庭菜園ノート"}},"mainEntityOfPage":"https://kateisaien-note.com/articles/{cfg['slug']}.html"}}
 </script>
 </head>
 <body>

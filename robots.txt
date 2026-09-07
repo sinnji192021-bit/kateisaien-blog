@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://kateisaien-blog.pages.dev/sitemap.xml
+Sitemap: https://kateisaien-note.com/sitemap.xml

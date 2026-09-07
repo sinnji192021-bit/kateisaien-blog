@@ -1,7 +1,7 @@
 {
   "_使い方": "新しい記事を追加したら、articles に1件足して `python3 scripts/build.py` を実行するだけ。TOPのカード・セクション・注目記事・関連記事・目次・読了時間・sitemap がすべて自動で更新されます。",
   "site": {
-    "base": "https://kateisaien-blog.pages.dev",
+    "base": "https://kateisaien-note.com",
     "name": "えいこうの家庭菜園ノート"
   },
   "sections": [
