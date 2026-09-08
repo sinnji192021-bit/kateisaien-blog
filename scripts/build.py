@@ -26,6 +26,8 @@ import json
 import re
 from pathlib import Path
 import datetime as _dt
+import subprocess
+from functools import lru_cache
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = json.loads((ROOT / "scripts" / "articles.json").read_text(encoding="utf-8"))
@@ -38,6 +40,40 @@ JP = "{}年{}月{}日"
 def jp_date(iso: str) -> str:
     y, m, d = iso.split("-")
     return JP.format(int(y), int(m), int(d))
+
+
+@lru_cache(maxsize=1)
+def _git_pubdates() -> dict:
+    """記事HTMLがブログに最初にコミットされた日＝ブログでの実際の公開日を返す。
+
+    ★articles.json の date は「ノウハウ図書館での公開予定日」で未来日が入る。
+      そのまま表示すると、読者には「2027年12月4日」のような未来の日付が見える。
+      ブログの表示日には、gitに最初に入った日（＝実際に公開した日）を使う。
+    """
+    try:
+        out = subprocess.run(
+            ["git", "log", "--diff-filter=A", "--format=C%ad", "--date=short",
+             "--name-only", "--", "articles/*.html"],
+            cwd=ROOT, capture_output=True, text=True, timeout=60,
+        ).stdout
+    except Exception:
+        return {}
+    dates, cur = {}, None
+    for line in out.splitlines():
+        if line.startswith("C"):
+            cur = line[1:]
+        elif line.startswith("articles/") and line.endswith(".html") and cur:
+            # git log は新しい順。上書きし続けるので最後＝いちばん古いコミットが残る
+            dates[line[len("articles/"):-len(".html")]] = cur
+    return dates
+
+
+def pub_date(a: dict) -> str:
+    """表示用の公開日（ISO）。git初回コミット日 → 無ければ articles.json の date を今日で頭打ち。"""
+    d = _git_pubdates().get(a["slug"])
+    if d:
+        return d
+    return min(a["date"], _dt.date.today().isoformat())
 
 
 def read_minutes(slug: str) -> int:
@@ -92,7 +128,7 @@ def build_index() -> None:
       <span class="fbadge">🌞 今月の必読</span>
       <h2>{html.escape(feat["card"])}</h2>
       <p>{html.escape(feat["desc"])}</p>
-      <div class="meta"><time datetime="{feat["date"]}">{jp_date(feat["date"])}</time><span class="cat{" g" if feat.get("catcolor")=="g" else ""}">{feat["cat"]}</span><span class="rtime">読了目安 約{fm}分</span></div>
+      <div class="meta"><time datetime="{pub_date(feat)}">{jp_date(pub_date(feat))}</time><span class="cat{" g" if feat.get("catcolor")=="g" else ""}">{feat["cat"]}</span><span class="rtime">読了目安 約{fm}分</span></div>
       <span class="more">続きを読む →</span>
     </div>
   </a>'''
@@ -121,7 +157,7 @@ def build_index() -> None:
       <div class="body">
         <h2>{step}{html.escape(a["card"])}</h2>
         <p class="ex">{html.escape(a["desc"])}</p>
-        <div class="meta"><time datetime="{a["date"]}">{jp_date(a["date"])}</time>{cat}<span class="rtime">約{mins[a["slug"]]}分</span>{new}</div>
+        <div class="meta"><time datetime="{pub_date(a)}">{jp_date(pub_date(a))}</time>{cat}<span class="rtime">約{mins[a["slug"]]}分</span>{new}</div>
       </div>
     </a></div>''')
         out.append("\n  </div>\n")
@@ -148,7 +184,7 @@ def build_articles() -> None:
         m = read_minutes(a["slug"])
 
         cat = f'<span class="cat{" g" if a.get("catcolor")=="g" else ""}">{a["cat"]}</span>'
-        meta = f'  <div class="postmeta"><time datetime="{a["date"]}">{jp_date(a["date"])}</time>{cat}<span class="rtime">読了目安 約{m}分</span></div>'
+        meta = f'  <div class="postmeta"><time datetime="{pub_date(a)}">{jp_date(pub_date(a))}</time>{cat}<span class="rtime">読了目安 約{m}分</span></div>'
         if 'class="postmeta"' in h:
             h = re.sub(r'  <div class="postmeta">.*?</div>', meta, h, count=1, flags=re.S)
         else:
