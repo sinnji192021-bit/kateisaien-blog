@@ -114,7 +114,7 @@ def main() -> None:
         title_blob = widen(a.get("card", "") + " " + a.get("short", ""))
         desc_blob = widen(a.get("desc", ""))
         out.append({
-            "u": f"articles/{a['slug']}.html",
+            "u": f"articles/{a['slug']}",
             "t": a.get("card", ""),
             "d": a.get("desc", ""),
             "c": a.get("cat", ""),

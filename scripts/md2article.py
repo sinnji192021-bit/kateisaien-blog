@@ -145,12 +145,12 @@ def build(cfg):
 <title>{title}｜えいこうの家庭菜園ノート</title>
 <meta name="description" content="{cfg['desc']}">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://kateisaien-note.com/articles/{cfg['slug']}.html">
+<link rel="canonical" href="https://kateisaien-note.com/articles/{cfg['slug']}">
 <meta name="theme-color" content="#5FA049">
 <meta property="og:type" content="article">
 <meta property="og:title" content="{title}｜えいこうの家庭菜園ノート">
 <meta property="og:description" content="{cfg['og']}">
-<meta property="og:url" content="https://kateisaien-note.com/articles/{cfg['slug']}.html">
+<meta property="og:url" content="https://kateisaien-note.com/articles/{cfg['slug']}">
 <meta property="og:image" content="{imgurl}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">

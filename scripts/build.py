@@ -122,7 +122,7 @@ def build_index() -> None:
 
     feat = next((a for a in ARTS if a.get("featured")), newest_first(ARTS)[0])
     fm = mins[feat["slug"]]
-    featured = f'''  <a class="featured" href="articles/{feat["slug"]}.html">
+    featured = f'''  <a class="featured" href="articles/{feat["slug"]}">
     <div class="fthumb"><img src="{feat["thumb"]}" alt="{html.escape(feat["short"])}"></div>
     <div class="fbody">
       <span class="fbadge">🌞 今月の必読</span>
@@ -152,7 +152,7 @@ def build_index() -> None:
             new = '<span class="new">NEW</span>' if a["slug"] == newest else ""
             cat = f'<span class="cat{" g" if a.get("catcolor")=="g" else ""}">{a["cat"]}</span>'
             out.append(f'''
-    <div class="card"><a href="articles/{a["slug"]}.html">
+    <div class="card"><a href="articles/{a["slug"]}">
       <div class="thumb"><img src="{a["thumb"]}" alt="{html.escape(a["short"])}" loading="lazy"></div>
       <div class="body">
         <h2>{step}{html.escape(a["card"])}</h2>
@@ -207,7 +207,7 @@ def build_articles() -> None:
             h = re.sub(r'(<h2 id="s1">)', toc + "\n\n  " + r"\1", h, count=1)
 
         cards = "".join(
-            f'\n      <a href="{r["slug"]}.html"><div class="thumb"><img src="../{r["thumb"]}" '
+            f'\n      <a href="{r["slug"]}"><div class="thumb"><img src="../{r["thumb"]}" '
             f'alt="{html.escape(r["short"])}" loading="lazy"></div><h4>{html.escape(r["short"])}</h4></a>'
             for r in pick_related(a)
         )
@@ -247,7 +247,7 @@ def build_sitemap() -> None:
     urls = [f"  <url>\n    <loc>{BASE}/</loc>\n    <lastmod>{today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>"]
     for a in sorted(ARTS, key=lambda x: x["slug"]):
         urls.append(
-            f"  <url>\n    <loc>{BASE}/articles/{a['slug']}.html</loc>\n"
+            f"  <url>\n    <loc>{BASE}/articles/{a['slug']}</loc>\n"
             f"    <lastmod>{_lastmod(a)}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>"
         )
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "\n".join(urls) + "\n</urlset>\n"
