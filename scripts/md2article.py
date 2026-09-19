@@ -31,6 +31,9 @@ def build(cfg):
     t = open(cfg['src']).read()
     title = t.split('## ① タイトル欄')[1].split('```')[1].strip()
     body_md = t.split('（↓本文ここから）')[1].split('（↑本文ここまで）')[0].strip()
+    # ★は「ここが要点」という執筆用の印。読者に見せるものではないので、ここで落とす。
+    #   2026-09-19に発覚：ブログ104記事中95記事・計7,815個が本番ページに出たままだった。
+    body_md = body_md.replace('★', '')
     thumb = t.split('## ④ アイキャッチ画像')[1].split('`')[1].split('/')[-1].replace('.png','')
 
     IMG   = cfg.get('img_alt', {})
