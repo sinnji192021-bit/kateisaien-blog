@@ -250,9 +250,25 @@ def build_sitemap() -> None:
             f"  <url>\n    <loc>{BASE}/articles/{a['slug']}</loc>\n"
             f"    <lastmod>{_lastmod(a)}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>"
         )
+    # ---- 英語版（/en/）。articles.json の管理外なので、実ファイルを見て足す ----
+    #   ★ここを足さないと、build.py を流すたびに英語ページがサイトマップから消えます
+    en_dir = ROOT / "en"
+    n_en = 0
+    if en_dir.is_dir():
+        for f in sorted(en_dir.rglob("*.html")):
+            rel = f.relative_to(ROOT).as_posix()            # 例 en/articles/sowing-depth.html
+            loc = BASE + "/" + (rel[:-len("index.html")] if rel.endswith("index.html") else rel[:-len(".html")])
+            lm = min(_dt.date.fromtimestamp(f.stat().st_mtime), _dt.date.today()).isoformat()
+            pri = "0.9" if rel.endswith("index.html") else "0.8"
+            urls.append(
+                f"  <url>\n    <loc>{loc}</loc>\n"
+                f"    <lastmod>{lm}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>{pri}</priority>\n  </url>"
+            )
+            n_en += 1
+
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "\n".join(urls) + "\n</urlset>\n"
     (ROOT / "sitemap.xml").write_text(xml, encoding="utf-8")
-    print(f"sitemap.xml  {len(ARTS)+1}件")
+    print(f"sitemap.xml  {len(ARTS)+1}件（日本語） ＋ {n_en}件（英語 /en/）")
 
 
 def main() -> None:
