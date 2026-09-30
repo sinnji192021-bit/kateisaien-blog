@@ -250,6 +250,14 @@ def build_sitemap() -> None:
             f"  <url>\n    <loc>{BASE}/articles/{a['slug']}</loc>\n"
             f"    <lastmod>{_lastmod(a)}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>"
         )
+    # ---- 単独ページ（articles.json の管理外）----
+    for extra in ("privacy.html",):
+        f = ROOT / extra
+        if f.exists():
+            lm = min(_dt.date.fromtimestamp(f.stat().st_mtime), _dt.date.today()).isoformat()
+            urls.append(f"  <url>\n    <loc>{BASE}/{extra[:-5]}</loc>\n"
+                        f"    <lastmod>{lm}</lastmod>\n    <changefreq>yearly</changefreq>\n    <priority>0.3</priority>\n  </url>")
+
     # ---- 英語版（/en/）。articles.json の管理外なので、実ファイルを見て足す ----
     #   ★ここを足さないと、build.py を流すたびに英語ページがサイトマップから消えます
     en_dir = ROOT / "en"
