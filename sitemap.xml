@@ -560,19 +560,19 @@
   </url>
   <url>
     <loc>https://kateisaien-note.com/articles/88-toumorokoshi</loc>
-    <lastmod>2026-09-30</lastmod>
+    <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://kateisaien-note.com/articles/89-edamame</loc>
-    <lastmod>2026-09-30</lastmod>
+    <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://kateisaien-note.com/articles/90-kabocha</loc>
-    <lastmod>2026-09-30</lastmod>
+    <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -590,7 +590,7 @@
   </url>
   <url>
     <loc>https://kateisaien-note.com/articles/93-goya</loc>
-    <lastmod>2026-09-30</lastmod>
+    <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -691,6 +691,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://kateisaien-note.com/en/articles/growing-bitter-gourd</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://kateisaien-note.com/en/articles/growing-broccoli</loc>
     <lastmod>2026-09-30</lastmod>
     <changefreq>monthly</changefreq>
@@ -704,6 +710,12 @@
   </url>
   <url>
     <loc>https://kateisaien-note.com/en/articles/growing-cucumbers</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kateisaien-note.com/en/articles/growing-edamame</loc>
     <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -751,8 +763,20 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://kateisaien-note.com/en/articles/growing-squash</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://kateisaien-note.com/en/articles/growing-sweet-potatoes</loc>
     <lastmod>2026-09-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kateisaien-note.com/en/articles/growing-sweetcorn</loc>
+    <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
