@@ -208,3 +208,6 @@ html,body{overflow-x:clip}
   .stags{gap:7px}
   .stags .stlabel{width:100%;margin-bottom:2px}
 }
+
+/* 注目記事と同じ号を一覧から隠すため（build.py が data-mon を振る） */
+.cards .card[hidden]{display:none}

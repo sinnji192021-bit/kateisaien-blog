@@ -109,6 +109,25 @@ def block(text: str, name: str, content: str) -> str:
     return pat.sub(lambda m: m.group(1) + "\n" + content + "\n  " + m.group(2), text)
 
 
+# ------------------------------------------------- 月別記事（◯月号）
+MONTH_RE = re.compile(r"-(\d{1,2})gatsu$")
+
+
+def monthly_map() -> dict:
+    """{月: 記事} の対応表。slug の「-10gatsu」から月を拾う。"""
+    out = {}
+    for a in ARTS:
+        hit = MONTH_RE.search(a["slug"])
+        if hit:
+            out[int(hit.group(1))] = a
+    return out
+
+
+def jst_month() -> int:
+    """日本時間の月。★UTCで判定すると月初・月末が1日ずれる。"""
+    return (_dt.datetime.now(_dt.timezone.utc) + _dt.timedelta(hours=9)).month
+
+
 def newest_first(items):
     return sorted(items, key=lambda a: (a["date"], a["slug"]), reverse=True)
 
@@ -120,7 +139,12 @@ def build_index() -> None:
     mins = {a["slug"]: read_minutes(a["slug"]) for a in ARTS}
     newest = newest_first(ARTS)[0]["slug"]
 
-    feat = next((a for a in ARTS if a.get("featured")), newest_first(ARTS)[0])
+    # ★注目記事（🌞 今月の必読）は「いまの月の号」を自動で選ぶ（2026-10-02）
+    #   articles.json で featured:true を付けた記事があれば、そちらを優先する（手動の上書き用）。
+    months = monthly_map()
+    feat = (next((a for a in ARTS if a.get("featured")), None)
+            or months.get(jst_month())
+            or newest_first(ARTS)[0])
     fm = mins[feat["slug"]]
     featured = f'''  <a class="featured" href="articles/{feat["slug"]}">
     <div class="fthumb"><img src="{feat["thumb"]}" alt="{html.escape(feat["short"])}"></div>
@@ -132,6 +156,51 @@ def build_index() -> None:
       <span class="more">続きを読む →</span>
     </div>
   </a>'''
+
+    # ★HTMLを作り直すのはpushするときだけなので、それだけでは翌月また古くなる。
+    #   12か月分の中身をページに埋めておき、読み込んだ瞬間に当月へ差し替える。
+    table = {
+        str(mo): {
+            "u": f'articles/{a["slug"]}', "i": a["thumb"], "alt": a["short"],
+            "t": a["card"], "d": a["desc"], "dt": pub_date(a),
+            "jp": jp_date(pub_date(a)), "c": a["cat"],
+            "cg": a.get("catcolor") == "g", "m": mins[a["slug"]],
+        }
+        for mo, a in sorted(months.items())
+    }
+    featured += """
+  <script>
+  /* 🌞 今月の必読を、見ている月に合わせる（2026-10-02・build.pyが自動生成） */
+  (function () {
+    var M = """ + json.dumps(table, ensure_ascii=False) + """;
+    var j = new Date(Date.now() + 9 * 3600 * 1000);   /* 日本時間 */
+    var cur = M[j.getUTCMonth() + 1];
+    var el = document.querySelector('a.featured');
+    if (!cur || !el) return;
+    if (el.getAttribute('href') !== cur.u) {
+      el.setAttribute('href', cur.u);
+      var img = el.querySelector('.fthumb img');
+      img.src = cur.i; img.alt = cur.alt;
+      el.querySelector('.fbody h2').textContent = cur.t;
+      el.querySelector('.fbody p').textContent = cur.d;
+      var tm = el.querySelector('time');
+      tm.setAttribute('datetime', cur.dt); tm.textContent = cur.jp;
+      var ct = el.querySelector('.cat');
+      ct.textContent = cur.c; ct.className = 'cat' + (cur.cg ? ' g' : '');
+      el.querySelector('.rtime').textContent = '読了目安 約' + cur.m + '分';
+    }
+    /* 下の一覧に同じ号が二重に出ないようにする（12本は必ず残す） */
+    function dedupe() {
+      var cards = document.querySelectorAll('.cards .card[data-mon]');
+      for (var i = 0; i < cards.length; i++) {
+        cards[i].hidden = (cards[i].getAttribute('data-mon') === String(j.getUTCMonth() + 1));
+      }
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', dedupe);
+    } else { dedupe(); }
+  })();
+  </script>"""
     h = block(h, "FEATURED", featured)
 
     chips = '  <nav class="chips" id="list">\n' + "".join(
@@ -141,7 +210,11 @@ def build_index() -> None:
 
     out = []
     for sec in DATA["sections"]:
-        rows = [a for a in ARTS if a.get("section") == sec["id"] and not a.get("featured")]
+        rows = [a for a in ARTS if a.get("section") == sec["id"]]
+        # ★月別記事は12本すべて一覧に残す。注目記事は月で入れ替わるので、
+        #   ここで外すと「先月号がページのどこにも無い」状態になる（二重表示はJSで消す）
+        if sec["id"] != "monthly":
+            rows = [a for a in rows if not a.get("featured")]
         if not rows:
             continue
         rows = newest_first(rows) if not sec.get("numbered") else sorted(rows, key=lambda a: a["slug"])
@@ -151,8 +224,11 @@ def build_index() -> None:
             step = f'<span class="step">{i}</span>' if sec.get("numbered") else ""
             new = '<span class="new">NEW</span>' if a["slug"] == newest else ""
             cat = f'<span class="cat{" g" if a.get("catcolor")=="g" else ""}">{a["cat"]}</span>'
+            mo = MONTH_RE.search(a["slug"])
+            dm = f' data-mon="{int(mo.group(1))}"' if mo else ""
+            hid = " hidden" if a["slug"] == feat["slug"] else ""
             out.append(f'''
-    <div class="card"><a href="articles/{a["slug"]}">
+    <div class="card"{dm}{hid}><a href="articles/{a["slug"]}">
       <div class="thumb"><img src="{a["thumb"]}" alt="{html.escape(a["short"])}" loading="lazy"></div>
       <div class="body">
         <h2>{step}{html.escape(a["card"])}</h2>
@@ -163,7 +239,7 @@ def build_index() -> None:
         out.append("\n  </div>\n")
     h = block(h, "CARDS", "\n".join(out))
     p.write_text(h, encoding="utf-8")
-    print(f"index.html   注目記事={feat['slug']} / カード{len([a for a in ARTS if not a.get('featured')])}枚")
+    print(f"index.html   注目記事={feat['slug']} / カード{sum(1 for x in out if x.lstrip().startswith('<div class="card"'))}枚（注目={feat['slug']}）")
 
 
 # ------------------------------------------------------------ 各記事
