@@ -15,14 +15,16 @@ import io, re, sys
 if len(sys.argv) != 2:
     sys.exit(__doc__)
 v = sys.argv[1].strip()
-href = v if v.startswith("http") else "mailto:" + v
-link = f'<a href="{href}">{v}</a>'
+is_url = v.startswith("http")
+href = v if is_url else "mailto:" + v
 
+# ★URLはそのまま出すと長くて読みにくいので、日本語版・英語版それぞれの言葉にする
 TARGETS = [
-    ("privacy.html", "（ここに問い合わせ先を記入してください）"),
-    ("en/privacy.html", "(add your contact address here)"),
+    ("privacy.html", "（ここに問い合わせ先を記入してください）", "お問い合わせフォーム"),
+    ("en/privacy.html", "(add your contact address here)", "Contact form"),
 ]
-for f, placeholder in TARGETS:
+for f, placeholder, label in TARGETS:
+    link = f'<a href="{href}" target="_blank" rel="noopener">{label if is_url else v}</a>' 
     s = io.open(f, encoding="utf-8").read()
     if placeholder in s:
         s = s.replace(placeholder, link)
