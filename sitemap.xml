@@ -739,6 +739,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://kateisaien-note.com/en/articles/growing-burdock</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://kateisaien-note.com/en/articles/growing-carrots</loc>
     <lastmod>2026-09-30</lastmod>
     <changefreq>monthly</changefreq>
@@ -788,6 +794,12 @@
   </url>
   <url>
     <loc>https://kateisaien-note.com/en/articles/growing-melons</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kateisaien-note.com/en/articles/growing-myoga</loc>
     <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -933,6 +945,12 @@
   <url>
     <loc>https://kateisaien-note.com/en/articles/pest-control-without-sprays</loc>
     <lastmod>2026-09-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kateisaien-note.com/en/articles/pick-your-own-with-children</loc>
+    <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1142,6 +1160,12 @@
   </url>
   <url>
     <loc>https://kateisaien-note.com/en/articles/winter-garden-jobs</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kateisaien-note.com/en/articles/working-in-the-rain</loc>
     <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
