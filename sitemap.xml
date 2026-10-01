@@ -925,6 +925,18 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://kateisaien-note.com/en/articles/sowing-in-late-winter</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kateisaien-note.com/en/articles/spring-peas-and-broad-beans</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://kateisaien-note.com/en/articles/staking-and-tying-in</loc>
     <lastmod>2026-09-30</lastmod>
     <changefreq>monthly</changefreq>
@@ -963,6 +975,12 @@
   <url>
     <loc>https://kateisaien-note.com/en/articles/surviving-extreme-heat</loc>
     <lastmod>2026-09-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kateisaien-note.com/en/articles/the-final-feed-for-onions</loc>
+    <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -1016,6 +1034,12 @@
   </url>
   <url>
     <loc>https://kateisaien-note.com/en/articles/winter-care-onions-garlic</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kateisaien-note.com/en/articles/winter-digging</loc>
     <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
