@@ -853,6 +853,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://kateisaien-note.com/en/articles/leaving-the-garden</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://kateisaien-note.com/en/articles/lime-and-soil-ph</loc>
     <lastmod>2026-09-30</lastmod>
     <changefreq>monthly</changefreq>
@@ -896,6 +902,18 @@
   </url>
   <url>
     <loc>https://kateisaien-note.com/en/articles/potato-shoots-and-earthing-up</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kateisaien-note.com/en/articles/preparing-for-a-storm</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kateisaien-note.com/en/articles/rain-covers-and-drainage</loc>
     <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -1017,6 +1035,12 @@
   <url>
     <loc>https://kateisaien-note.com/en/articles/transplanting-basics</loc>
     <lastmod>2026-09-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kateisaien-note.com/en/articles/turning-sweet-potato-vines</loc>
+    <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
