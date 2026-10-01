@@ -661,6 +661,18 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://kateisaien-note.com/en/articles/choosing-good-seedlings</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kateisaien-note.com/en/articles/common-beginner-mistakes</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://kateisaien-note.com/en/articles/companion-planting</loc>
     <lastmod>2026-09-30</lastmod>
     <changefreq>monthly</changefreq>
@@ -913,6 +925,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://kateisaien-note.com/en/articles/starting-a-kitchen-garden</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://kateisaien-note.com/en/articles/storing-your-harvest</loc>
     <lastmod>2026-09-30</lastmod>
     <changefreq>monthly</changefreq>
@@ -969,6 +987,12 @@
   <url>
     <loc>https://kateisaien-note.com/en/articles/when-to-harvest-for-sweetness</loc>
     <lastmod>2026-09-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kateisaien-note.com/en/articles/when-to-harvest</loc>
+    <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
