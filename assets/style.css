@@ -184,3 +184,27 @@ html,body{overflow-x:clip}
   .sfield{padding:9px 14px}
   .sfield input{font-size:16px} /* iOSの自動ズーム防止 */
 }
+
+/* ---- TOPの検索を目立たせる（2026-10-02）
+   注目記事の下に小さく置いていたため気づかれていなかった。
+   見出しの直下に、中身のある箱として置く ---- */
+.sbox.hero{background:var(--cream);border:1.5px solid #e3ebd8;border-radius:16px;
+  padding:22px 24px 20px;margin:0 0 34px}
+.sbox.hero .stitle{font-family:var(--maru);font-size:17px;font-weight:bold;color:var(--dgreen);
+  margin:0 0 14px;letter-spacing:.01em}
+.sbox.hero .sfield{border-width:2px;padding:14px 22px}
+.sbox.hero .sfield input{font-size:17px}
+.sbox.hero .shint{margin-top:12px}
+.stags{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:14px}
+.stags .stlabel{font-size:12px;color:var(--muted);margin-right:2px}
+.stags button{font-family:inherit;font-size:13px;color:var(--dgreen);background:#fff;
+  border:1px solid #d8e0cf;border-radius:20px;padding:6px 14px;cursor:pointer;
+  transition:background .15s,border-color .15s,color .15s}
+.stags button:hover{background:var(--green);border-color:var(--green);color:#fff}
+@media(max-width:520px){
+  .sbox.hero{padding:18px 16px 16px;border-radius:14px}
+  .sbox.hero .stitle{font-size:15.5px;line-height:1.6}
+  .sbox.hero .sfield{padding:11px 16px}
+  .stags{gap:7px}
+  .stags .stlabel{width:100%;margin-bottom:2px}
+}

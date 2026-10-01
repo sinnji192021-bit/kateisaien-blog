@@ -41,7 +41,7 @@
     <a href="articles/07-mushi">虫対策</a>
     <a href="index.html#list">記事一覧</a>
   </nav>
-  <a class="cta" href="articles/08-8gatsu">🌱 今月の作業</a>
+  <a class="cta" href="/kongetsu">🌱 今月の作業</a>
 </div></header>
 
 <div class="wrap wide">
@@ -50,6 +50,33 @@
     <h1>育てて、学んで、おいしい。</h1>
     <p class="desc">家庭菜園歴8年・理科の教員免許を持つ、えいこう（8150）のブログ。有機・無農薬の野菜づくりを、失敗談と身近な理科をまじえて初心者向けにやさしくお話しします。</p>
   </section>
+
+  <!-- サイト内検索（build.py の管理外。ここは手で編集してよい）
+       ★2026-10-02：注目記事の下に埋もれて気づかれなかったので、見出しの直下へ移動した -->
+  <div class="sbox hero" id="sbox">
+    <p class="stitle">🔍 野菜の名前・困っていることで記事をさがす</p>
+    <label class="sfield">
+      <span class="sicon" aria-hidden="true">🔍</span>
+      <input id="q" type="search" autocomplete="off"
+             placeholder="例：玉ねぎ　連作　水やり"
+             aria-label="サイト内検索">
+      <button type="button" id="sclear" aria-label="検索をやめる" hidden>✕</button>
+    </label>
+    <div class="stags" id="stags">
+      <span class="stlabel">よく探される言葉</span>
+      <button type="button">玉ねぎ</button>
+      <button type="button">大根</button>
+      <button type="button">トマト</button>
+      <button type="button">じゃがいも</button>
+      <button type="button">連作</button>
+      <button type="button">プランター</button>
+      <button type="button">水やり</button>
+      <button type="button">虫</button>
+    </div>
+    <p class="shint" id="shint">記事104本の見出しと要点から、打ったそのままで探します</p>
+    <div id="sresults" class="sresults" hidden></div>
+  </div>
+
 
   <!-- BUILD:FEATURED -->
   <a class="featured" href="articles/11-9gatsu">
@@ -72,19 +99,6 @@
     <a href="#author">✍️ 書いている人</a>
   </nav>
   <!-- /BUILD:CHIPS -->
-
-  <!-- サイト内検索（build.py の管理外。ここは手で編集してよい） -->
-  <div class="sbox" id="sbox">
-    <label class="sfield">
-      <span class="sicon" aria-hidden="true">🔍</span>
-      <input id="q" type="search" autocomplete="off"
-             placeholder="野菜名やキーワードで探す（例：玉ねぎ、連作、水やり）"
-             aria-label="サイト内検索">
-      <button type="button" id="sclear" aria-label="検索をやめる" hidden>✕</button>
-    </label>
-    <p class="shint" id="shint">記事80本の見出しと要点から探します</p>
-    <div id="sresults" class="sresults" hidden></div>
-  </div>
 
 
   <!-- BUILD:CARDS -->
@@ -1126,7 +1140,7 @@
     var hits = search(raw);
     if (hits === null) {
       box.hidden = true; box.innerHTML = '';
-      hint.textContent = '記事80本の見出しと要点から探します';
+      hint.textContent = '記事104本の見出しと要点から、打ったそのままで探します';
       return;
     }
     var terms = norm(raw).split(/[\s\u3000]+/).filter(Boolean);
@@ -1163,6 +1177,18 @@
     if (e.key === 'Escape') { q.value = ''; onInput(); q.blur(); }
   });
   clear.addEventListener('click', function () { q.value = ''; onInput(); q.focus(); });
+
+  // よく探される言葉のボタン（2026-10-02）
+  var tags = document.getElementById('stags');
+  if (tags) {
+    tags.addEventListener('click', function (e) {
+      var b = e.target.closest('button');
+      if (!b) return;
+      q.value = b.textContent.trim();
+      onInput();
+      q.focus();
+    });
+  }
 
   // ?s=玉ねぎ で開いたときは、その語で検索した状態にする
   var pre = new URLSearchParams(location.search).get('s');
