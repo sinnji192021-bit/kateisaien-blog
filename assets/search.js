@@ -71,6 +71,21 @@
   else inner.appendChild(btn);
 
   // ── ページ自身に検索箱があるなら、そこへ送るだけ
+  // ── スマホでは、読んでいる間（下へスクロール中）はヘッダーを引っ込める（2026-10-02）
+  //    スマホのヘッダーは150pxあり、画面の約2割をずっと占めていた。
+  //    上へ戻すとすぐ出るので、検索ボタンにはいつでも手が届く。
+  (function () {
+    var h = document.querySelector('header.site');
+    if (!h || !window.matchMedia('(max-width:560px)').matches) return;
+    var last = 0;
+    window.addEventListener('scroll', function () {
+      var y = window.scrollY;
+      if (y > 240 && y > last + 6) h.classList.add('hdr-hide');
+      else if (y < last - 6 || y <= 240) h.classList.remove('hdr-hide');
+      last = y;
+    }, { passive: true });
+  })();
+
   var own = document.getElementById('sbox');
   if (own) {
     btn.addEventListener('click', function () {

@@ -215,3 +215,39 @@ html,body{overflow-x:clip}
 /* ヘッダーの🔍ボタンと検索パネルの体裁は assets/search.js の中に持たせている。
    ★style.css はブラウザに最大4時間キャッシュされるため、HTMLだけ新しくなった読者に
      「素のまま下に出る」状態を見せてしまう。JSが自分で入れれば、その窓がなくなる。 */
+
+/* ============ スマホで見たときの直し（2026-10-02 実機幅375pxで確認） ============ */
+@media(max-width:560px){
+
+  /* ① 楽天リンクが切れていた問題。
+     楽天が吐くHTMLは「画像240px＋説明248px＝504px」の固定幅の表で、
+     スマホでは右半分（価格・楽天で購入ボタン）が画面の外に出ていた。
+     横スクロールはできたが、気づかれないので実質ボタンが無いのと同じだった。
+     → 表をやめて縦積みにする。HTMLは楽天が吐くものなので、こちらはCSSだけで直す。 */
+  .rk{overflow-x:visible}
+  .rk > table, .rk > table > tbody, .rk > table > tbody > tr, .rk > table > tbody > tr > td{
+    display:block !important; width:100% !important}
+  .rk > table > tbody > tr > td > div{width:auto !important; max-width:100% !important}
+  .rk table table, .rk table table > tbody, .rk table table > tbody > tr{
+    display:block !important; width:100% !important}
+  .rk table table > tbody > tr > td{display:block !important; width:100% !important}
+  .rk img{margin:0 auto !important}
+  .rk p{font-size:13px !important; text-align:center !important}
+
+  /* ② ヘッダーが3段で164px（画面の20%）あり、ずっと居座っていた */
+  .site .inner{padding:8px 16px; gap:8px; row-gap:6px}
+  .site .logo{font-size:16.5px}
+  .gnav{gap:14px; width:100%; order:3; margin-left:0}
+  .gnav a{font-size:13px}
+  .navsearch{margin-left:auto; padding:6px 10px}
+  .cta{font-size:12px; padding:6px 10px; margin-left:0}
+
+  /* ③ ②でも150px残るので、読んでいる間（下へスクロール中）は隠す。
+     上へ戻すとすぐ出てくる。クラスの付け外しは assets/search.js がやる。
+     ★このCSSが古いままでも「隠れないだけ」で、こわれはしない */
+  header.site{transition:transform .25s ease}
+  header.site.hdr-hide{transform:translateY(-101%)}
+
+  /* ④ フッターのリンクが高さ13pxしかなく、指で押しにくかった */
+  footer.site a{display:inline-block; padding:6px 2px}
+}
