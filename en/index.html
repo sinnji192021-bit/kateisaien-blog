@@ -54,6 +54,32 @@
     <p class="desc">I'm Eiko. Eight years of growing vegetables organically and without pesticides in central Japan, and a teaching licence in science — so every article ends with the mechanism, not just the instruction. Each one comes with diagrams.</p>
   </section>
 
+  <!-- サイト内検索（2026-10-02 追加。日本語版TOPと同じ作り） -->
+  <div class="sbox hero" id="sbox">
+    <p class="stitle">🔍 Find an article by crop, or by what's going wrong</p>
+    <label class="sfield">
+      <span class="sicon" aria-hidden="true">🔍</span>
+      <input id="q" type="search" autocomplete="off"
+             placeholder="e.g. tomatoes&nbsp;&nbsp;slugs&nbsp;&nbsp;frost"
+             aria-label="Search this site">
+      <button type="button" id="sclear" aria-label="Clear search" hidden>✕</button>
+    </label>
+    <div class="stags" id="stags">
+      <span class="stlabel">Popular</span>
+      <button type="button">tomatoes</button>
+      <button type="button">onions</button>
+      <button type="button">slugs</button>
+      <button type="button">frost</button>
+      <button type="button">compost</button>
+      <button type="button">containers</button>
+      <button type="button">watering</button>
+      <button type="button">pests</button>
+    </div>
+    <p class="shint" id="shint">Searches the full text of all 104 articles</p>
+    <div id="sresults" class="sresults" hidden></div>
+  </div>
+
+
   <div class="note-zone">
     <p><strong>Where these notes come from.</strong> I garden in central Japan, roughly <strong>USDA zone 8b–9a</strong>. Most of what's here is about how plants work, so it travels anywhere — but where timing matters I write it as <strong>"weeks before your first frost"</strong> rather than a calendar month, so you can put your own dates in.</p>
     <p><strong>About the diagrams.</strong> They're in Japanese, because they're the same diagrams as the Japanese edition. Under each one there's a box headed <em>"What this diagram says"</em> with every label translated, so you're not missing anything.</p>
@@ -1046,6 +1072,115 @@
   <p>© Eiko's Kitchen Garden Notes</p>
   <p><a href="privacy">Privacy Policy</a></p>
 </footer>
+<script id="kateisaien-search-en">
+/* サイト内検索（英語版・2026-10-02）。日本語版と同じ作りだが、
+   英語は語の切れ目があるので、かな変換は要らない。索引は単語の集合。 */
+(function () {
+  var q = document.getElementById('q');
+  if (!q) return;
+  var box = document.getElementById('sresults');
+  var hint = document.getElementById('shint');
+  var clear = document.getElementById('sclear');
+  var tags = document.getElementById('stags');
+  var HINT = hint.textContent;
+  var data = null, loading = false, timer = null;
+
+  function norm(s) { return (s || '').normalize('NFKC').toLowerCase().trim(); }
+
+  function load() {
+    if (data || loading) return Promise.resolve();
+    loading = true;
+    return fetch('search-index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (j) { data = j; loading = false; })
+      .catch(function () { loading = false; data = []; });
+  }
+
+  function esc(s) {
+    return (s || '').replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  function hl(text, terms) {
+    var out = esc(text);
+    terms.forEach(function (t) {
+      if (!t) return;
+      var re = new RegExp('(' + t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+      out = out.replace(re, '<mark>$1</mark>');
+    });
+    return out;
+  }
+
+  function search(raw) {
+    var terms = norm(raw).split(/\s+/).filter(Boolean);
+    if (!terms.length) return null;
+    var hits = data.filter(function (a) {
+      return terms.every(function (t) { return a.s.indexOf(t) >= 0; });
+    });
+    /* 題名に出てくるものを上に、次に説明文。同点なら元の順 */
+    function score(a) {
+      var t = norm(a.t), d = norm(a.d), n = 0;
+      terms.forEach(function (w) {
+        if (t.indexOf(w) >= 0) n += 10;
+        else if (d.indexOf(w) >= 0) n += 3;
+      });
+      return n;
+    }
+    hits.forEach(function (a, i) { a._i = i; a._sc = score(a); });
+    hits.sort(function (x, y) { return (y._sc - x._sc) || (x._i - y._i); });
+    return hits;
+  }
+
+  function render(raw) {
+    var hits = search(raw);
+    if (hits === null) {
+      box.hidden = true; box.innerHTML = ''; hint.textContent = HINT; return;
+    }
+    var terms = norm(raw).split(/\s+/).filter(Boolean);
+    hint.textContent = '';
+    box.hidden = false;
+    if (!hits.length) {
+      box.innerHTML = '<div class="snone">Nothing matched "<b>' + esc(raw) + '</b>".<br>'
+        + 'Try a crop name (tomatoes, onions) or a problem (slugs, frost, watering).</div>';
+      return;
+    }
+    var html = '<p class="scount"><b>' + hits.length + '</b> articles</p>';
+    hits.slice(0, 30).forEach(function (a) {
+      html += '<a class="shit" href="' + a.u + '">'
+        + (a.i ? '<img src="' + a.i + '" alt="" loading="lazy">' : '')
+        + '<div><p class="st">' + hl(a.t, terms) + '</p>'
+        + '<p class="sd">' + hl(a.d, terms) + '</p></div></a>';
+    });
+    if (hits.length > 30) html += '<p class="scount">and ' + (hits.length - 30) + ' more</p>';
+    box.innerHTML = html;
+  }
+
+  function onInput() {
+    var v = q.value;
+    clear.hidden = !v;
+    clearTimeout(timer);
+    timer = setTimeout(function () { load().then(function () { render(v); }); }, 120);
+  }
+
+  q.addEventListener('input', onInput);
+  q.addEventListener('focus', load);
+  q.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { q.value = ''; onInput(); q.blur(); }
+  });
+  clear.addEventListener('click', function () { q.value = ''; onInput(); q.focus(); });
+  if (tags) {
+    tags.addEventListener('click', function (e) {
+      var b = e.target.closest('button');
+      if (!b) return;
+      q.value = b.textContent.trim(); onInput(); q.focus();
+    });
+  }
+
+  var pre = new URLSearchParams(location.search).get('s');
+  if (pre) { q.value = pre; onInput(); }
+})();
+</script>
 <script src="/assets/lang-hint.js" defer></script>
 </body>
 </html>
