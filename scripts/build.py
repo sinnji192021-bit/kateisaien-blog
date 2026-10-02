@@ -376,6 +376,7 @@ def main() -> None:
     except Exception as e:
         print(f"  ⚠️ サムネ作成を飛ばしました（{e}）")
     print("記事チェック")
+    _post = True
     ARTS = check()
     if not ARTS:
         raise SystemExit("公開できる記事がありません")
@@ -388,6 +389,15 @@ def main() -> None:
     subprocess.run(["python3", str(ROOT / "scripts" / "build_search.py")], check=True)
     print("\n✅ 完了。ブラウザで確認して、よければ PUSH してください。")
 
+    # ★一覧カードと「あわせて読みたい」を作り直したあとなので、
+    #   そこで消えた width/height をここで入れ直す（レイアウトのずれ防止）
+    try:
+        import subprocess
+        r = subprocess.run([sys.executable, str(ROOT / "scripts" / "add_img_size.py")],
+                           check=True, capture_output=True, text=True, timeout=900)
+        print(r.stdout.strip().splitlines()[-1])
+    except Exception as e:
+        print(f"  ⚠️ 画像サイズの付与を飛ばしました（{e}）")
 
 if __name__ == "__main__":
     main()
