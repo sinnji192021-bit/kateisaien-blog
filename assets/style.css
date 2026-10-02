@@ -211,3 +211,7 @@ html,body{overflow-x:clip}
 
 /* 注目記事と同じ号を一覧から隠すため（build.py が data-mon を振る） */
 .cards .card[hidden]{display:none}
+
+/* ヘッダーの🔍ボタンと検索パネルの体裁は assets/search.js の中に持たせている。
+   ★style.css はブラウザに最大4時間キャッシュされるため、HTMLだけ新しくなった読者に
+     「素のまま下に出る」状態を見せてしまう。JSが自分で入れれば、その窓がなくなる。 */
