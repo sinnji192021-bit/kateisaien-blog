@@ -251,3 +251,19 @@ html,body{overflow-x:clip}
   /* ④ フッターのリンクが高さ13pxしかなく、指で押しにくかった */
   footer.site a{display:inline-block; padding:6px 2px}
 }
+
+/* 本文の表（いまは英語版の耐寒ゾーン表1つだけ）。
+   スマホでは2列のままだと左の列が細くなり、「Zone 8 and warmer」が
+   7行に折れて読めなかった（2026-10-02 実機幅375pxで確認）。
+   → 1行＝1枚のカードに積み替える。楽天ブロックの表は .rk 側で別に扱う */
+@media(max-width:560px){
+  .post table{display:block; border:0; width:100%}
+  .post table tbody{display:block}
+  .post table tr{display:block; border:1px solid #e6e0d2; border-radius:10px;
+    padding:12px 14px; margin:0 0 10px; background:#fff}
+  .post table th, .post table td{display:block; border:0; padding:0}
+  .post table tr:first-child{background:none; border:0; padding:0 2px; margin-bottom:8px}
+  .post table tr:first-child th{display:inline; font-size:13px; color:var(--muted); font-weight:normal}
+  .post table tr:first-child th + th:before{content:" / "}
+  .post table td:first-child{font-size:16px; margin-bottom:6px}
+}

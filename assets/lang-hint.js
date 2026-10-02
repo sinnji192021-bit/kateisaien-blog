@@ -27,17 +27,28 @@
       ? ['This page is also available in English', 'Read in English', 'Not now']
       : ['この記事には日本語版があります', '日本語で読む', '閉じる'];
 
+    // ★スマホでは貼り付けない（2026-10-02）
+    //   幅375pxだと2行になって86px＝画面の11%あり、ヘッダーより上に居座っていた。
+    //   これは「入口でもう片方の言語を知らせる」だけの案内なので、
+    //   読み始めたら流れて消えてよい。パソコンでは1行40px程度なので貼り付けたまま。
+    var st = document.createElement('style');
+    st.textContent = [
+      '.langhint{position:sticky;top:0;z-index:9999;background:#eef5ea;',
+      '  border-bottom:1px solid #cfe0c6;padding:10px 14px;font-size:.94em;line-height:1.5;',
+      '  display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;color:#2f5f24}',
+      '.langhint a{font-weight:700;color:#2f7a22;text-decoration:underline}',
+      '.langhint button{background:none;border:1px solid #b9cfae;border-radius:999px;',
+      '  padding:5px 14px;font-size:.9em;color:#4b6b42;cursor:pointer}',
+      '@media(max-width:560px){.langhint{position:static;padding:8px 12px;gap:8px;font-size:.88em}}'
+    ].join('');
+    document.head.appendChild(st);
+
     var bar = document.createElement('div');
+    bar.className = 'langhint';
     bar.setAttribute('role', 'note');
-    bar.style.cssText = 'position:sticky;top:0;z-index:9999;background:#eef5ea;border-bottom:1px solid #cfe0c6;'
-      + 'padding:10px 14px;font-size:.94em;line-height:1.5;display:flex;gap:12px;align-items:center;'
-      + 'justify-content:center;flex-wrap:wrap;color:#2f5f24';
     var span = document.createElement('span'); span.textContent = msg[0];
     var a = document.createElement('a'); a.href = href; a.textContent = msg[1] + ' →';
-    a.style.cssText = 'font-weight:700;color:#2f7a22;text-decoration:underline';
     var b = document.createElement('button'); b.type = 'button'; b.textContent = msg[2];
-    b.style.cssText = 'background:none;border:1px solid #b9cfae;border-radius:999px;padding:3px 12px;'
-      + 'font-size:.9em;color:#4b6b42;cursor:pointer';
     b.addEventListener('click', function () {
       try { localStorage.setItem(key, 'off'); } catch (e) {}
       bar.remove();
