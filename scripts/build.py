@@ -24,6 +24,7 @@ from __future__ import annotations
 import html
 import json
 import re
+import sys
 from pathlib import Path
 import datetime as _dt
 import subprocess
@@ -111,6 +112,15 @@ def block(text: str, name: str, content: str) -> str:
 
 # ------------------------------------------------- 月別記事（◯月号）
 MONTH_RE = re.compile(r"-(\d{1,2})gatsu$")
+
+
+def thumb(path: str) -> str:
+    """カード・関連記事に使う小さいサムネ（幅640px）のパス。
+    ★記事の先頭に出る大きなアイキャッチには使わない（いちばん目立つ画像なので元のまま）。
+      実体は scripts/make_thumbs.py が images/thumb/ に作る。"""
+    rel = path[len("images/"):] if path.startswith("images/") else path
+    cand = ROOT / "images" / "thumb" / rel
+    return f"images/thumb/{rel}" if cand.exists() else path
 
 
 def monthly_map() -> dict:
@@ -229,7 +239,7 @@ def build_index() -> None:
             hid = " hidden" if a["slug"] == feat["slug"] else ""
             out.append(f'''
     <div class="card"{dm}{hid}><a href="articles/{a["slug"]}">
-      <div class="thumb"><img src="{a["thumb"]}" alt="{html.escape(a["short"])}" loading="lazy"></div>
+      <div class="thumb"><img src="{thumb(a["thumb"])}" alt="{html.escape(a["short"])}" loading="lazy"></div>
       <div class="body">
         <h2>{step}{html.escape(a["card"])}</h2>
         <p class="ex">{html.escape(a["desc"])}</p>
@@ -283,7 +293,7 @@ def build_articles() -> None:
             h = re.sub(r'(<h2 id="s1">)', toc + "\n\n  " + r"\1", h, count=1)
 
         cards = "".join(
-            f'\n      <a href="{r["slug"]}"><div class="thumb"><img src="../{r["thumb"]}" '
+            f'\n      <a href="{r["slug"]}"><div class="thumb"><img src="../{thumb(r["thumb"])}" '
             f'alt="{html.escape(r["short"])}" loading="lazy"></div><h4>{html.escape(r["short"])}</h4></a>'
             for r in pick_related(a)
         )
@@ -357,6 +367,14 @@ def build_sitemap() -> None:
 
 def main() -> None:
     global ARTS
+    # ★一覧カードと「あわせて読みたい」は幅640pxのサムネを読む。
+    #   作り忘れると元の1280px（1枚200KB超）に戻ってしまうので、毎回ここで作る。
+    try:
+        import subprocess
+        subprocess.run([sys.executable, str(ROOT / "scripts" / "make_thumbs.py")],
+                       check=True, capture_output=True, text=True, timeout=900)
+    except Exception as e:
+        print(f"  ⚠️ サムネ作成を飛ばしました（{e}）")
     print("記事チェック")
     ARTS = check()
     if not ARTS:

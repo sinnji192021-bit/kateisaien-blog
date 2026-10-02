@@ -32,6 +32,9 @@ for f in sorted(glob.glob("en/articles/*.html")):
     desc = pick(s, r'<meta name="description" content="([^"]*)"')
     img = pick(s, r'<meta property="og:image" content="([^"]*)"')
     img = img.replace("https://kateisaien-note.com/", "../")  # /en/ から見た相対
+    # ★検索結果の行は96×64pxで出るので、小さいサムネを使う（2026-10-02）
+    if img.startswith("../images/") and os.path.exists("images/thumb/" + img[len("../images/"):]):
+        img = "../images/thumb/" + img[len("../images/"):]
 
     body = s.split("<article", 1)[-1]
     heads = " ".join(text(h) for h in re.findall(r"<h2[^>]*>(.*?)</h2>", body, re.S))

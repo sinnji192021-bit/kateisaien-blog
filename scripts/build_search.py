@@ -9,10 +9,18 @@ articles.json の見出し・説明に加えて、記事本文から
 
 使い方: python3 scripts/build_search.py
 """
-import json, re, unicodedata
+import json, os, re, unicodedata
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+def _thumb(path):
+    """幅640pxのサムネ（scripts/make_thumbs.py が作る）があればそちらを返す。"""
+    if not path.startswith("images/"):
+        return path
+    cand = "images/thumb/" + path[len("images/"):]
+    return cand if os.path.exists(ROOT / cand) else path
+
+
 ARTS = json.loads((ROOT / "scripts" / "articles.json").read_text(encoding="utf-8"))
 
 # ── 表記ゆれ辞書 ────────────────────────────────────────
@@ -119,7 +127,8 @@ def main() -> None:
             "d": a.get("desc", ""),
             "c": a.get("cat", ""),
             "g": a.get("catcolor", "g"),
-            "i": a.get("thumb", ""),
+            # ★検索結果の行は96×64pxで出るので、小さいサムネを使う（2026-10-02）
+            "i": _thumb(a.get("thumb", "")),
             "s": blob,
             "ta": title_blob,
             "da": desc_blob,

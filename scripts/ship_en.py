@@ -20,7 +20,7 @@ p = 'en/index.html'; s = io.open(p, encoding='utf-8').read()
 blk = ''
 for slug, ja, zu, alt, h2, ex, cat, rt in rows:
     blk += f'''    <div class="card"><a href="articles/{slug}">
-      <div class="thumb"><img src="../images/en/{slug}.webp" alt="{alt}" loading="lazy"></div>
+      <div class="thumb"><img src="../images/thumb/en/{slug}.webp" alt="{alt}" loading="lazy"></div>
       <div class="body">
         <h2>{h2}</h2>
         <p class="ex">{ex}</p>
