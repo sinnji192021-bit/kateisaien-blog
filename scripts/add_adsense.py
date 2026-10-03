@@ -18,8 +18,12 @@ import glob, io, os, re, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(ROOT)
 
+# ★★client に渡すのは「広告クライアントID」＝ ca- を頭に付けた形（2026-10-04に修正）
+#   AdSenseの画面に出るのは pub-7926543135818453 だが、タグに書くのは ca-pub-7926543135818453。
+#   ca- が無いとアカウントに紐づかず、広告が出ないまま審査に出すことになる。
+#   2026-10-04の点検で、日本語106ページ・英語106ページの全部が ca- 無しで本番に出ていた。
 TAG = ('<script async src="https://pagead2.googlesyndication.com/pagead/js/'
-       'adsbygoogle.js?client={pid}" crossorigin="anonymous"></script>\n')
+       'adsbygoogle.js?client=ca-{pid}" crossorigin="anonymous"></script>\n')
 MARK = "pagead2.googlesyndication.com"
 
 
