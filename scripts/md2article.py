@@ -12,6 +12,7 @@
   "date":  "2026-10-10",
   "cat":   "育てて学ぶ",       # index側の表示カテゴリ
   "rtime": "約13分",
+  "title": "ブログ用のタイトル（任意・省略すると①タイトル欄を使う）",
   "desc":  "meta description",
   "og":    "og:description",
   "next":  ["20-11gatsu.html", "【11月にまく・植える野菜】…"],
@@ -30,6 +31,10 @@ from urllib.parse import quote
 def build(cfg):
     t = open(cfg['src']).read()
     title = t.split('## ① タイトル欄')[1].split('```')[1].strip()
+    # ★設定JSONに "title" があれば、そちらを使う（2026-10-07）
+    #   ブログは検索から来る人向けにタイトルを変えることがあり、
+    #   図書館の投稿タイトルと分けたいため。これが無いと、作り直すたびに検索向けの直しが消える。
+    title = cfg.get('title', title)
     body_md = t.split('（↓本文ここから）')[1].split('（↑本文ここまで）')[0].strip()
     # ★は「ここが要点」という執筆用の印。読者に見せるものではないので、ここで落とす。
     #   2026-09-19に発覚：ブログ104記事中95記事・計7,815個が本番ページに出たままだった。
