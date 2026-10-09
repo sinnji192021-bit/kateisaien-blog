@@ -23,8 +23,6 @@ from __future__ import annotations
 
 import html
 import json
-import collections
-import math
 import re
 import sys
 from pathlib import Path
@@ -255,74 +253,14 @@ def build_index() -> None:
 
 
 # ------------------------------------------------------------ 各記事
-# ------------------------------------------------------------ 関連記事の採点
-# 「あわせて読みたい」は、以前は同カテゴリの新着3本を出していた。
-# ただし「育てて学ぶ」が76記事と大きすぎて、中身の関係ない新着が並んでいた
-# （例: 白菜の記事の下に 落ち葉・霜・野菜保存）。
-# そこで、記事どうしの文章の重なりで選ぶ。日本語なので形態素解析は使わず、
-# 2文字ずつの並び（文字bigram）のTF-IDFで測る。辞書も外部ライブラリも要らない。
-_SIM_CACHE: dict[str, dict[str, float]] = {}
-
-def _plain(slug: str) -> str:
-    """記事本文からタグ・広告表・目次・関連欄を除いた素のテキスト。"""
-    f = ROOT / "articles" / f"{slug}.html"
-    if not f.exists():
-        return ""
-    t = f.read_text(encoding="utf-8")
-    m = re.search(r"<article.*?</article>", t, re.S)
-    t = m.group(0) if m else t
-    t = re.sub(r"<(script|style|table)[^>]*>.*?</\1>", " ", t, flags=re.S)
-    t = re.sub(r'<div class="(related|next|toc)".*?</div>\s*</div>', " ", t, flags=re.S)
-    return re.sub(r"<[^>]+>", " ", t)
-
-def _grams(t: str, w: int = 1) -> "collections.Counter[str]":
-    t = re.sub(r"[\s0-9A-Za-z<>&;#/．。、，,.！!？?「」『』（）()：:・…\-—–\u3000]", "", t)
-    c = collections.Counter()
-    for i in range(len(t) - 1):
-        c[t[i : i + 2]] += w
-    return c
-
-def _build_sim() -> None:
-    """全記事のTF-IDFベクトルを1回だけ作る。見出し4・説明3・本文1の重み。"""
-    vec = {a["slug"]: _grams(a.get("card", ""), 4) + _grams(a.get("desc", ""), 3)
-                      + _grams(_plain(a["slug"]), 1) for a in ARTS}
-    df: "collections.Counter[str]" = collections.Counter()
-    for c in vec.values():
-        for g in c:
-            df[g] += 1
-    n = len(vec)
-    for slug, c in vec.items():
-        # 半分以上の記事に出る語は、どこにでもある言葉なので捨てる
-        v = {g: (1 + math.log(f)) * math.log(n / (1 + df[g]))
-             for g, f in c.items() if df[g] < n * 0.5}
-        norm = math.sqrt(sum(x * x for x in v.values())) or 1.0
-        _SIM_CACHE[slug] = {g: x / norm for g, x in v.items()}
-
-def _sim(a: str, b: str) -> float:
-    x, y = _SIM_CACHE.get(a, {}), _SIM_CACHE.get(b, {})
-    if len(x) > len(y):
-        x, y = y, x
-    return sum(v * y[g] for g, v in x.items() if g in y)
-
 def pick_related(me: dict, n: int = 3) -> list[dict]:
-    """①手動指定 → ②文章の重なり → ③同カテゴリの新着、の順で選ぶ。"""
-    by = {a["slug"]: a for a in ARTS}
-    # ① articles.json に related: ["slug", ...] があれば、それが最優先
+    """同じカテゴリを優先し、足りない分は新着で埋める。"""
     if me.get("related"):
+        by = {a["slug"]: a for a in ARTS}
         return [by[s] for s in me["related"] if s in by][:n]
-    # ② 文章の重なりで選ぶ
-    if not _SIM_CACHE:
-        _build_sim()
-    scored = sorted(((_sim(me["slug"], a["slug"]), a["slug"]) for a in ARTS
-                     if a["slug"] != me["slug"]), reverse=True)
-    picked = [by[s] for v, s in scored[:n] if v >= 0.04]   # 似ていないものは採らない
-    if len(picked) == n:
-        return picked
-    # ③ 足りなければ従来どおり同カテゴリ→新着で埋める
-    have = {a["slug"] for a in picked} | {me["slug"]}
-    same = [a for a in newest_first(ARTS) if a["cat"] == me["cat"] and a["slug"] not in have]
-    rest = [a for a in newest_first(ARTS) if a["slug"] not in have and a not in same]
-    return (picked + same + rest)[:n]
+    same = [a for a in newest_first(ARTS) if a["cat"] == me["cat"] and a["slug"] != me["slug"]]
+    rest = [a for a in newest_first(ARTS) if a["slug"] != me["slug"] and a not in same]
+    return (same + rest)[:n]
 
 
 def build_articles() -> None:
@@ -399,10 +337,7 @@ def build_sitemap() -> None:
             f"    <lastmod>{_lastmod(a)}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>"
         )
     # ---- 単独ページ（articles.json の管理外）----
-    #   ★ここに足さないと、build.py を流すたびにサイトマップから消えます。
-    #     about / contact は AdSense 審査で「運営者情報・お問い合わせがあること」を
-    #     見られる重要ページなので、必ず残すこと（2026-10-09 に実際に消えた）。
-    for extra in ("privacy.html", "about.html", "contact.html"):
+    for extra in ("privacy.html",):
         f = ROOT / extra
         if f.exists():
             lm = min(_dt.date.fromtimestamp(f.stat().st_mtime), _dt.date.today()).isoformat()
