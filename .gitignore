@@ -5,3 +5,4 @@ scripts/rk_backup_before_id/
 # 全部で738MBあり、Cloudflare Pagesにもそのまま配信されていたので対象から外す（2026-10-02）。
 # ★ローカルには残してある。別の品質で作り直したくなったら、ここから変換できる。
 images/**/*.png
+*.bak-*
