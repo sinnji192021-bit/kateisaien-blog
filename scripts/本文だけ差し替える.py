@@ -45,6 +45,65 @@ def body_end(seg):
     ps = [p for p in ps if p > 0]
     return min(ps) if ps else len(seg)
 
+GREET = re.compile(r"<p>どうも、8150[^<]*</p>")
+
+def trim_lead_and_desc(dst, src):
+    """目次より前の「冒頭」を、あいさつ1行だけにする。説明文（description）も新しい要約に揃える。
+    ★2026-10-13：本文だけ差し替えたら、目次の前に図書館版の書き出し・🗨️の吹き出し・旧図1・
+      旧「基本データ」の見出しまで残っていた（公開済み55本すべて）。図書館との重複が残るうえ、
+      新しい本文と食い違う断定もあったので、冒頭も差し替える。"""
+    s = open(dst, encoding="utf-8").read()
+    a = s.find("<article")
+    toc = s.find('<div class="toc"', a)
+    pm = s.find('<div class="postmeta"', a)
+    img = s.find("<img", pm)
+    if min(a, toc, pm, img) < 0 or not (pm < img < toc):
+        return "冒頭の目印なし（そのまま）"
+    ie = s.find(">", img) + 1
+    lead = s[ie:toc]
+    g = GREET.search(lead)
+    new_lead = "\n\n  " + g.group(0) + "\n\n  " if g else "\n\n  "
+    s = s[:ie] + new_lead + s[toc:]
+    summ = re.search(r"## ② 要約欄\n```\n(.*?)\n```", open(src, encoding="utf-8").read(), re.S)
+    if summ:
+        esc = lambda x: x.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
+        raw = summ.group(1).strip()
+        d, og = esc(raw[:120]), esc(raw[:100])          # md2article と同じ長さ
+        s = re.sub(r'(<meta name="description" content=")[^"]*(")', lambda m: m.group(1) + d + m.group(2), s, count=1)
+        s = re.sub(r'(<meta property="og:description" content=")[^"]*(")', lambda m: m.group(1) + og + m.group(2), s, count=1)
+        dj = json.dumps(raw[:100], ensure_ascii=False)
+    ttl = re.search(r"## ① タイトル欄\n```\n(.*?)\n```", open(src, encoding="utf-8").read(), re.S)
+    if ttl:
+        tt = ttl.group(1).strip()
+        s = re.sub(r'(<meta property="og:title" content=")[^"]*(")',
+                   lambda m: m.group(1) + tt.replace('"', "&quot;") + "｜えいこうの家庭菜園ノート" + m.group(2), s, count=1)
+        s = re.sub(r'("@type":"BlogPosting","headline":)"(?:[^"\\]|\\.)*"',
+                   lambda m: m.group(1) + json.dumps(tt, ensure_ascii=False), s, count=1)
+    if summ:
+        s = re.sub(r'("@type":"BlogPosting".*?"description":)"(?:[^"\\]|\\.)*"', lambda m: m.group(1) + dj, s, count=1, flags=re.S)
+    open(dst, "w", encoding="utf-8").write(s)
+    n = len(re.sub(r"<[^>]+>|\s", "", lead))
+    return f"冒頭 {n}字 → {'あいさつ1行' if g else 'なし'}"
+
+FIGDIR = "/Users/sinnji19/CodexClaude/みずのさんノウハウ図書館/図解"
+
+def fix_figures(dst):
+    """本文の図がブログ側に無ければ図解の原本から補い、ファイル名のままの alt を読める文にする。
+    ★2026-10-13：2月号は図を作り直していたのに、ブログの images/ に入っておらず5枚とも出ていなかった。"""
+    s = open(dst, encoding="utf-8").read()
+    added = 0
+    for d, name in set(re.findall(r'src="\.\./images/([^/"]+)/([^"/]+?)\.(?:png|webp)"', s)):
+        png = os.path.join(ROOT, "images", d, name + ".png")
+        if not os.path.exists(png) and not os.path.exists(png[:-4] + ".webp"):
+            org = os.path.join(FIGDIR, name + ".png")
+            if os.path.exists(org):
+                shutil.copy2(org, png); added += 1
+    s2 = re.sub(r'(<img src="\.\./images/[^"]+/([^"/]+?)\.(?:png|webp)" alt=")\2(")',
+                lambda m: m.group(1) + re.sub(r"^.*?_図\d+_", "", m.group(2)) + m.group(3), s)
+    if s2 != s:
+        open(dst, "w", encoding="utf-8").write(s2)
+    return added
+
 def main(src, slug):
     dst = os.path.join(ROOT, "articles", slug + ".html")
     if not os.path.exists(dst):
@@ -66,6 +125,10 @@ def main(src, slug):
     s = re.sub(r"(<title>)[^<]*(</title>)", lambda m: m.group(1) + title + "｜えいこうの家庭菜園ノート" + m.group(2), s, count=1)
     s = re.sub(r'(<h1[^>]*>)[^<]*(</h1>)', lambda m: m.group(1) + title + m.group(2), s, count=1)
     open(dst, "w", encoding="utf-8").write(s)
+    print("   " + trim_lead_and_desc(dst, src))
+    k = fix_figures(dst)
+    if k:
+        print(f"   図を{k}枚補充")
     for s2 in ("add_img_size.py", "png2webp.py", "build.py"):
         subprocess.run([sys.executable, os.path.join(ROOT, "scripts", s2)], stdout=subprocess.DEVNULL)
     print(f"◎ 本文を差し替えました: {dst}")

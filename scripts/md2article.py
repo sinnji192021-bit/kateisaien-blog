@@ -82,7 +82,7 @@ def build(cfg):
             flush(); out.append(f'  <h3>{html.escape(l.replace("〈小見出し〉", ""))}</h3>'); i += 1; continue
         if l.startswith('〔画像：'):
             flush(); f = l.replace('〔画像：', '').replace('〕', '')
-            out.append(f'  <img src="../images/{cfg["imgdir"]}/{f}.png" alt="{IMG.get(f, f)}">'); i += 1; continue
+            out.append(f'  <img src="../images/{cfg["imgdir"]}/{f}.png" alt="{IMG.get(f, re.sub(r'^.*?_図\d+_', '', f))}">'); i += 1; continue
         if l.startswith('・'):
             buf.append(deco(l[1:])); i += 1; continue
         if l.startswith('✅'):
