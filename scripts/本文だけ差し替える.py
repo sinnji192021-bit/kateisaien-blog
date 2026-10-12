@@ -45,6 +45,26 @@ def body_end(seg):
     ps = [p for p in ps if p > 0]
     return min(ps) if ps else len(seg)
 
+def div_blocks(text, opener):
+    """text の中から opener で始まる <div> ブロックを、入れ子を数えて丸ごと抜き出す"""
+    out, i = [], 0
+    while True:
+        k = text.find(opener, i)
+        if k < 0:
+            return out
+        depth, j = 0, k
+        while True:
+            o, c = text.find("<div", j), text.find("</div>", j)
+            if c < 0:
+                return out
+            if 0 <= o < c:
+                depth += 1; j = o + 4
+            else:
+                depth -= 1; j = c + 6
+                if depth == 0:
+                    break
+        out.append(text[k:j]); i = j
+
 GREET = re.compile(r"<p>どうも、8150[^<]*</p>")
 
 def trim_lead_and_desc(dst, src):
@@ -119,10 +139,16 @@ def main(src, slug):
     a, b = s.find("<article"), s.find("</article>")
     seg = s[a:b]
     st = seg.find("</div>", seg.find('<div class="toc"')) + len("</div>")
-    en = body_end(seg)
+    # ★2026-10-13：アフィリ枠が本文の途中に複数ある記事（01〜09）では、最初の枠で差し替えが止まり、
+    #   その後ろに図書館版の旧本文（未承認の体験談を含む）が残っていた。
+    #   → 本文の終わりは related / next のいちばん手前。間にあるアフィリ枠はすべて残して本文の後ろへまとめる
+    ps = [seg.find(f'<div class="{c}"', st) for c in ("related", "next")]
+    ps = [x for x in ps if x > 0]
+    en = min(ps) if ps else -1
     if st <= 0 or en <= 0:
-        sys.exit("■ 目次かアフィリ枠の目印が見つからない。手で確認すること")
-    open(dst, "w", encoding="utf-8").write(s[:a] + seg[:st] + body + seg[en:] + s[b:])
+        sys.exit("■ 目次か related/next の目印が見つからない。手で確認すること")
+    affs = div_blocks(seg[st:en], '<div class="aff">')
+    open(dst, "w", encoding="utf-8").write(s[:a] + seg[:st] + body + "".join("\n  " + x + "\n" for x in affs) + "\n  " + seg[en:] + s[b:])
     # タイトルまわりも新しい原稿に合わせる
     title = cfg.get("_title") or re.search(r"## ① タイトル欄\n```\n(.*?)\n```",
                                            open(src, encoding="utf-8").read(), re.S).group(1).strip()
