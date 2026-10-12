@@ -61,6 +61,11 @@ def trim_lead_and_desc(dst, src):
         return "冒頭の目印なし（そのまま）"
     ie = s.find(">", img) + 1
     lead = s[ie:toc]
+    # ★2026-10-13：本文に「※」注記があると md2article が目次をそこへ置くため、
+    #   目次より前の本文（この記事で分かること・本文の半分）まで削っていた（11月号・栽培日誌）。
+    #   目次より前に見出しがあれば、冒頭ではないので削らない
+    if "<h2" in lead:
+        return "★目次より前に見出しがある（削らない）"
     g = GREET.search(lead)
     new_lead = "\n\n  " + g.group(0) + "\n\n  " if g else "\n\n  "
     s = s[:ie] + new_lead + s[toc:]
