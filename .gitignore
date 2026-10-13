@@ -6,3 +6,4 @@ scripts/rk_backup_before_id/
 # ★ローカルには残してある。別の品質で作り直したくなったら、ここから変換できる。
 images/**/*.png
 *.bak-*
+記事設定/_予約公開ログ.txt
