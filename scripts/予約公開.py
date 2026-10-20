@@ -47,6 +47,28 @@ def run(cmd, t=600):
     return r.stdout
 
 
+def move_icloud_dups():
+    # ★iCloudが .git の中に「main 2」「index 2」のような複製を作ると、git pull が
+    #   「bad object refs/heads/main 2」で失敗し、自動公開が止まる（2026-10-17〜20に4日止まった）。
+    #   名前が「空白＋数字」で終わるものだけを .git の外へ退避する（消さない）。
+    import re
+    found = []
+    for base in [".git", ".git/refs"]:
+        for dirpath, dirnames, filenames in os.walk(base):
+            if base == ".git":
+                dirnames[:] = []  # .git 直下だけ見る（objects は見ない）
+            for fn in filenames:
+                if re.search(r" \d+$", fn):
+                    found.append(os.path.join(dirpath, fn))
+    if not found:
+        return
+    dst = f"{LIB}/tmp/git退避_icloud重複/{time.strftime('%Y%m%d_%H%M%S')}"
+    os.makedirs(dst, exist_ok=True)
+    for p in found:
+        shutil.move(p, os.path.join(dst, p.replace("/", "__")))
+    log(f"・iCloudの複製を .git から退避した（{len(found)}個）: {', '.join(found)} → {dst}")
+
+
 def published_today(today):
     if not os.path.exists(LOG):
         return False
@@ -72,6 +94,7 @@ def main():
     if DRY:
         log(f"（試し）今日出すのは {sl}"); return 0
 
+    move_icloud_dups()
     dirty = run(["/usr/bin/git", "status", "--porcelain"], 60).strip()
     if dirty:
         log(f"■ 未コミットの変更があるので止めた（{len(dirty.splitlines())}件）。ほかの作業中の可能性")

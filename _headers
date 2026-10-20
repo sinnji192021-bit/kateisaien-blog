@@ -1,0 +1,9 @@
+# 全ページに付けるセキュリティ用のヘッダー（2026-10-21）
+# ・HSTS：一度来たブラウザは、次から必ず https で開く（サブドメインは含めない）
+# ・X-Frame-Options：ほかのサイトの枠（iframe）の中に、このブログを埋め込ませない
+# ・Permissions-Policy：カメラ・マイク・位置情報は使わないので、最初から閉じておく
+# ★CSP（読み込み先の許可リスト）は、AdSense・GA4・楽天の読み込みを止める恐れがあるので入れていない
+/*
+  Strict-Transport-Security: max-age=31536000
+  X-Frame-Options: SAMEORIGIN
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
