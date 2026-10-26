@@ -3,7 +3,8 @@
    python3 scripts/ship_en.py spec.tsv
    spec.tsv: slug <TAB> JAスラッグ <TAB> 図解名 <TAB> alt <TAB> h2 <TAB> 抜粋 <TAB> カテゴリ <TAB> 読了
    ★アイキャッチのコピー・記事の移動・カード追加・日本語版hreflangまで一気にやる。"""
-import sys, io, os, re, shutil, subprocess
+import sys, io, os, re, shutil, subprocess, datetime
+TODAY = datetime.date.today()
 G = '/Users/sinnji19/CodexClaude/みずのさんノウハウ図書館/図解/_英語版'
 HOLD = '/Users/sinnji19/CodexClaude/みずのさんノウハウ図書館/英語版_待機/hold'
 B = 'https://kateisaien-note.com'
@@ -24,7 +25,7 @@ for slug, ja, zu, alt, h2, ex, cat, rt in rows:
       <div class="body">
         <h2>{h2}</h2>
         <p class="ex">{ex}</p>
-        <div class="meta"><time datetime="2026-10-01">October 1, 2026</time><span class="cat">{cat}</span><span class="rtime">{rt}</span></div>
+        <div class="meta"><time datetime="{TODAY.isoformat()}">{TODAY.strftime("%B %-d, %Y")}</time><span class="cat">{cat}</span><span class="rtime">{rt}</span></div>
       </div>
     </a></div>\n\n'''
 m = re.search(r'(\s*)<div class="card"><a href="articles/', s)
