@@ -5,7 +5,7 @@
    ★アイキャッチのコピー・記事の移動・カード追加・日本語版hreflangまで一気にやる。"""
 import sys, io, os, re, shutil, subprocess
 G = '/Users/sinnji19/CodexClaude/みずのさんノウハウ図書館/図解/_英語版'
-HOLD = '/tmp/claude-501/en15hold'
+HOLD = '/Users/sinnji19/CodexClaude/みずのさんノウハウ図書館/英語版_待機/hold'
 B = 'https://kateisaien-note.com'
 rows = [l.rstrip('\n').split('\t') for l in io.open(sys.argv[1], encoding='utf-8') if l.strip()]
 for slug, ja, zu, alt, h2, ex, cat, rt in rows:
