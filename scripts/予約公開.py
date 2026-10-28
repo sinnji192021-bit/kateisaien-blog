@@ -10,6 +10,7 @@
   ・予約表の date が今日以前で、まだ公開していないものの中から、いちばん古いものを1本
   ・作業前に git の未コミット変更があれば止める（ほかの作業の書きかけを巻きこまない）
   ・外部コマンドはすべて timeout 付き（共通ルール7）。失敗したら通知を出して止める
+  ・失敗したら、その回の書きかけを戻してから止める（翌朝が「未コミットあり」で止まらないように・2026-10-28 追加）
   ・公開後、本番URLが200になるまで最大5分確かめてログに残す
 
 使い方: python3 scripts/予約公開.py [--dry]
@@ -67,6 +68,28 @@ def move_icloud_dups():
     for p in found:
         shutil.move(p, os.path.join(dst, p.replace("/", "__")))
     log(f"・iCloudの複製を .git から退避した（{len(found)}個）: {', '.join(found)} → {dst}")
+
+
+def cleanup_failed_run():
+    # ★失敗した回の書きかけが残ると、翌朝も「未コミットの変更あり」で止まる（2026-10-28 に起きかけた）。
+    #   作業前に未コミットが0なのは確かめてあるので、いま残っている変更はすべてこの回が作ったもの。
+    #   ・追跡しているファイル → git checkout で戻す
+    #   ・新しくできたファイル → 1つずつ消す（ディレクトリごとは消さない）。空になったフォルダだけ片づける
+    #   ・コミット済みで push だけ失敗した場合、コミットは消さない（翌日の push でまとめて出る）
+    changed = [l for l in run(["/usr/bin/git", "-c", "core.quotepath=false", "diff", "--name-only"], 60).splitlines() if l]
+    if changed:
+        run(["/usr/bin/git", "checkout", "--"] + changed, 120)
+    new = [l for l in run(["/usr/bin/git", "-c", "core.quotepath=false", "ls-files", "--others", "--exclude-standard"], 60).splitlines() if l]
+    for p in new:
+        os.remove(p)
+    for d in sorted({os.path.dirname(p) for p in new if os.path.dirname(p)}, key=len, reverse=True):
+        try:
+            os.rmdir(d)  # 空のときだけ消える（図解のPNGなど、git が無視するファイルが残っていれば消えない）
+        except OSError:
+            pass
+    left = run(["/usr/bin/git", "status", "--porcelain"], 60).strip()
+    log(f"  後片づけ：戻した {len(changed)}件・消した {len(new)}件" + (f"・★まだ残っている {len(left.splitlines())}件" if left else "・repo はきれい"))
+    return not left
 
 
 def published_today(today):
@@ -141,7 +164,12 @@ def main():
         run(["/usr/bin/git", "push", "-q", "origin", "HEAD"], 300)
     except Exception as ex:
         log(f"✕ {sl} の公開に失敗: {ex}")
-        notify(f"{sl} の公開に失敗しました。ログを見てください"); return 1
+        try:
+            clean = cleanup_failed_run()
+        except Exception as ex2:
+            clean = False
+            log(f"  ★後片づけにも失敗: {ex2}")
+        notify(f"{sl} の公開に失敗しました。ログを見てください" + ("" if clean else "（書きかけが残っています）")); return 1
 
     log(f"◎ 公開 {sl}（push済み）")
     url = f"https://kateisaien-note.com/articles/{sl}"
