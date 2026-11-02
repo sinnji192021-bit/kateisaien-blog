@@ -32,10 +32,15 @@ def check():
         else: miss += 1; print("  未挿入:", f)
     print(f"GA4タグ入り {has}件 ／ 未挿入 {miss}件")
 
+AFF = '<script src="/assets/aff-click.js" defer></script>\n'   # 楽天リンクのクリック計測（2026-11-03）
+
 def install():
-    n = skip = 0
+    n = skip = aff = 0
     for f in targets():
         s = open(f).read()
+        if 'hb.afl.rakuten' in s and 'aff-click.js' not in s:
+            s = s.replace('</head>', AFF + '</head>', 1)
+            open(f, 'w').write(s); aff += 1
         if GA_ID in s:
             skip += 1; continue
         m = re.search(r'<head>\s*\n', s)
@@ -43,7 +48,7 @@ def install():
             print("★<head>が見つからない:", f); continue
         s = s[:m.end()] + TAG + s[m.end():]
         open(f, 'w').write(s); n += 1
-    print(f"挿入 {n}件 ／ すでに入っていた {skip}件")
+    print(f"挿入 {n}件 ／ すでに入っていた {skip}件 ／ 楽天クリック計測を追加 {aff}件")
 
 if __name__ == '__main__':
     if '--check' in sys.argv: check()
