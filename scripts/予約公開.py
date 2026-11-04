@@ -26,10 +26,29 @@ DRY = "--dry" in sys.argv
 os.chdir(ROOT)
 
 
+def read_text(path):
+    """iCloud同期中のファイルは一時的に読めないことがある（OSError errno 11・2026-11-04 朝に公開が止まった）。30秒おきに最大10回読み直す"""
+    for i in range(10):
+        try:
+            with open(path, encoding="utf-8") as f:
+                return f.read()
+        except OSError as e:
+            if e.errno != 11 or i == 9:
+                raise
+            time.sleep(30)
+
+
 def log(msg):
     line = f"{time.strftime('%Y-%m-%d %H:%M')} {msg}"
-    with open(LOG, "a", encoding="utf-8") as f:
-        f.write(line + "\n")
+    for i in range(10):
+        try:
+            with open(LOG, "a", encoding="utf-8") as f:
+                f.write(line + "\n")
+            break
+        except OSError as e:
+            if e.errno != 11 or i == 9:
+                raise
+            time.sleep(30)
     print(line, flush=True)
 
 
@@ -95,15 +114,15 @@ def cleanup_failed_run():
 def published_today(today):
     if not os.path.exists(LOG):
         return False
-    return any(l.startswith(today) and "◎ 公開" in l for l in open(LOG, encoding="utf-8"))
+    return any(l.startswith(today) and "◎ 公開" in l for l in read_text(LOG).splitlines())
 
 
 def main():
     today = datetime.date.today().isoformat()
     if published_today(today):
         log("・今日はもう1本公開済み。何もしない"); return 0
-    sched = json.load(open(SCHED, encoding="utf-8"))
-    arts = json.load(open("scripts/articles.json", encoding="utf-8"))
+    sched = json.loads(read_text(SCHED))
+    arts = json.loads(read_text("scripts/articles.json"))
     have = {a["slug"] for a in arts["articles"]}
     todo = sorted([e for e in sched if e["date"] <= today and e["slug"] not in have], key=lambda e: e["date"])
     if not todo:
