@@ -53,14 +53,25 @@ def _git_pubdates() -> dict:
       そのまま表示すると、読者には「2027年12月4日」のような未来の日付が見える。
       ブログの表示日には、gitに最初に入った日（＝実際に公開した日）を使う。
     """
-    try:
-        out = subprocess.run(
-            ["git", "log", "--diff-filter=A", "--format=C%ad", "--date=short",
-             "--name-only", "--", "articles/*.html"],
-            cwd=ROOT, capture_output=True, text=True, timeout=60,
-        ).stdout
-    except Exception:
-        return {}
+    # ★2026-11-08：iCloudにgitの中身を逃がされていると git log が失敗し、ここで黙って {} を返していた。
+    #   → 全記事の表示日が articles.json の日付に化け、約90ページの日付が書き換わったままpushされた。
+    #   黙って続けず止める（予約公開.py は失敗すると書きかけを戻して止まる）。
+    r = None
+    for _ in range(3):
+        try:
+            r = subprocess.run(
+                ["git", "log", "--diff-filter=A", "--format=C%ad", "--date=short",
+                 "--name-only", "--", "articles/*.html"],
+                cwd=ROOT, capture_output=True, text=True, timeout=300,
+            )
+            if r.returncode == 0 and r.stdout.strip():
+                break
+        except subprocess.TimeoutExpired:
+            r = None
+    if r is None or r.returncode != 0 or not r.stdout.strip():
+        raise RuntimeError("git log で記事の公開日を取れなかった（表示日が化けるので止める）: "
+                           + ((r.stderr or "")[-300:] if r else "timeout"))
+    out = r.stdout
     dates, cur = {}, None
     for line in out.splitlines():
         if line.startswith("C"):
