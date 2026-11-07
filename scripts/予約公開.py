@@ -23,6 +23,23 @@ PY = sys.executable
 SCHED = f"{ROOT}/記事設定/_予約公開.json"
 LOG = f"{ROOT}/記事設定/_予約公開ログ.txt"
 DRY = "--dry" in sys.argv
+
+
+def allow_icloud_download():
+    """★launchd から起動すると「iCloudに逃がされたファイル（dataless）を取り寄せない」設定で動く。
+    ディスクが埋まるとiCloudがファイルを逃がす → open() が errno 11「Resource deadlock avoided」になり、
+    11/4・11/6・11/7・11/8 の朝の公開が止まった（何回読み直しても直らない）。
+    この設定を ON にすると、このプロセスと子プロセス（git など）が取り寄せてから読む（2026-11-08 実験で確認）。"""
+    try:
+        import ctypes
+        libc = ctypes.CDLL(None)
+        # IOPOL_TYPE_VFS_MATERIALIZE_DATALESS_FILES=3, IOPOL_SCOPE_PROCESS=0, IOPOL_MATERIALIZE_DATALESS_FILES_ON=2
+        libc.setiopolicy_np(3, 0, 2)
+    except Exception:
+        pass
+
+
+allow_icloud_download()
 os.chdir(ROOT)
 
 
