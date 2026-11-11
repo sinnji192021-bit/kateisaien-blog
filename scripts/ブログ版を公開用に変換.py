@@ -36,7 +36,7 @@ def build_cfg(src, slug):
     rtime = "約%d分" % max(3, round(len(re.sub(r"\s", "", body)) / 400))
     desc = field(md, "②")
     # 次の記事は既存の並びを引き継ぐ（無ければ記事一覧へ）
-    nxt = cur.get("next") or ["../articles.html", "記事一覧へ"]
+    nxt = cur.get("next") or ["/", "記事一覧へ"]  # ★/articles.html は存在しない（2026-11-11 Search Consoleの404で発覚）
     return {
         "src": os.path.abspath(src),
         "slug": slug,
