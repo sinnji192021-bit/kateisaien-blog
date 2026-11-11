@@ -401,6 +401,11 @@ def _lastmod(a) -> str:
     return min(d, today).isoformat()
 
 
+# ★★AdSense審査の間は英語版をサイトマップに載せない（2026-11-11・オーナー承認）。
+#   合格したら True に戻し、functions/_middleware.js の EN_REVIEW_MODE を false にする
+EN_IN_SITEMAP = False
+
+
 def build_sitemap() -> None:
     today = _dt.date.today().isoformat()
     urls = [f"  <url>\n    <loc>{BASE}/</loc>\n    <lastmod>{today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>"]
@@ -424,7 +429,7 @@ def build_sitemap() -> None:
     #   ★ここを足さないと、build.py を流すたびに英語ページがサイトマップから消えます
     en_dir = ROOT / "en"
     n_en = 0
-    if en_dir.is_dir():
+    if EN_IN_SITEMAP and en_dir.is_dir():
         for f in sorted(en_dir.rglob("*.html")):
             rel = f.relative_to(ROOT).as_posix()            # 例 en/articles/sowing-depth.html
             loc = BASE + "/" + (rel[:-len("index.html")] if rel.endswith("index.html") else rel[:-len(".html")])

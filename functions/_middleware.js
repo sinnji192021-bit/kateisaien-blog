@@ -20,6 +20,18 @@ function isBlocked(pathname) {
   return BLOCK_PREFIXES.some((pre) => p.startsWith(pre));
 }
 
+// ★★AdSense審査の間だけ、英語版（/en/）を審査と検索から外す（2026-11-11・オーナー承認「Aで」）
+//   ・英語版は日本語記事の翻訳なので「複製されたコンテンツ」と見られている疑いがある
+//   ・ページは消さない。リンク・URLからは今まで通り読める（海外向けに残すのがオーナー方針）
+//   ・やること：①検索に載せない印（X-Robots-Tag: noindex）を付ける ②広告のコードを配信時に取り除く
+//   ・サイトマップからは scripts/build.py の EN_IN_SITEMAP=False で外している
+//   ★合格したら、ここを false にし、build.py の EN_IN_SITEMAP を True に戻して build.py を流す
+const EN_REVIEW_MODE = true;
+
+function isEnglish(pathname) {
+  return pathname === "/en" || pathname.startsWith("/en/");
+}
+
 export async function onRequest(context) {
   const url = new URL(context.request.url);
   if (isBlocked(url.pathname)) {
@@ -33,5 +45,18 @@ export async function onRequest(context) {
     url.protocol = "https:";
     return Response.redirect(url.toString(), 301);
   }
-  return context.next();
+  const res = await context.next();
+  if (EN_REVIEW_MODE && isEnglish(url.pathname)) {
+    const out = new Response(res.body, res);
+    out.headers.set("X-Robots-Tag", "noindex");
+    const ct = out.headers.get("Content-Type") || "";
+    if (ct.includes("text/html")) {
+      return new HTMLRewriter()
+        .on('script[src*="pagead2.googlesyndication.com"]', { element(el) { el.remove(); } })
+        .on("ins.adsbygoogle", { element(el) { el.remove(); } })
+        .transform(out);
+    }
+    return out;
+  }
+  return res;
 }
