@@ -17,7 +17,7 @@
 """
 import datetime, json, os, shutil, subprocess, sys, time
 
-ROOT = "/Users/sinnji19/Documents/kateisaien-blog"
+ROOT = "/Users/sinnji19/CodexClaude/kateisaien-blog"  # 2026-11-15 iCloud同期の外へ移した（~/Documents/kateisaien-blog はリンク）
 LIB = "/Users/sinnji19/CodexClaude/みずのさんノウハウ図書館"
 PY = sys.executable
 SCHED = f"{ROOT}/記事設定/_予約公開.json"
